@@ -1,5 +1,7 @@
 import "../scss/screen.scss";
 
+const document  = document; 
+
 function component() {
   const element = document.createElement('div');
 
