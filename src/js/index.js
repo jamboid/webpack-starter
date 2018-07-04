@@ -1,15 +1,16 @@
 import "../scss/screen.scss";
-
-const document  = document; 
+import * as utils from "./modules/utils.js"
 
 function component() {
-  const element = document.createElement('div');
+  let element = document.createElement('div');
 
-  // Lodash, currently included via a script, is required for this line to work
-  // Lodash, now imported by this script
   element.innerHTML = 'Hello Webpackers';
 
   return element;
 }
 
-document.body.appendChild(component());
+let newElement = component();
+
+document.body.appendChild(newElement);
+
+window.console.log(utils.outerWidth(newElement));

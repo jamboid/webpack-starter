@@ -1,5 +1,5 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   entry: { main: './src/js'},
@@ -9,28 +9,25 @@ module.exports = {
   },
   module: {
     rules: [
-      // {
-      //   enforce: "pre",
-      //   test: /\.js$/,
-      //   exclude: /node_modules/,
-      //   loader: "eslint-loader",
-      // },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: "babel-loader",
+        loader: "babel-loader"
       },
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract(
-          {
-            fallback: 'style-loader',
-            use: ['css-loader', 'sass-loader']
-          })
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          'postcss-loader', 
+          'sass-loader'
+        ]
       }
     ]
   },
   plugins: [
-    new ExtractTextPlugin({filename: '/assets/css/screen.css'})
-  ]
+    new MiniCssExtractPlugin({
+      filename: "/assets/css/screen.css",
+    })
+  ],
 };
