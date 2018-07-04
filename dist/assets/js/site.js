@@ -94,7 +94,31 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\n__webpack_require__(/*! ../scss/screen.scss */ \"./src/scss/screen.scss\");\n\nvar _utils = __webpack_require__(/*! ./modules/utils.js */ \"./src/js/modules/utils.js\");\n\nvar utils = _interopRequireWildcard(_utils);\n\nfunction _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }\n\nfunction component() {\n  var element = document.createElement('div');\n\n  element.innerHTML = 'Hello Webpackers';\n\n  return element;\n}\n\nvar newElement = component();\n\ndocument.body.appendChild(newElement);\n\nwindow.console.log(utils.outerWidth(newElement));\n\n//# sourceURL=webpack:///./src/js/index.js?");
+eval("\n\n__webpack_require__(/*! ../scss/screen.scss */ \"./src/scss/screen.scss\");\n\nvar _utils = __webpack_require__(/*! ./modules/utils.js */ \"./src/js/modules/utils.js\");\n\nvar utils = _interopRequireWildcard(_utils);\n\nvar show = _interopRequireWildcard(_utils);\n\nvar _showhide = __webpack_require__(/*! ./modules/showhide.js */ \"./src/js/modules/showhide.js\");\n\nfunction _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }\n\nfunction component() {\n  var element = document.createElement('div');\n\n  element.innerHTML = 'Hello Webpackers';\n  return element;\n}\n\nvar newElement = component();\ndocument.body.appendChild(newElement);\nwindow.console.log(utils.outerWidth(newElement));\n\n(0, _showhide.buildNippers)();\n\n//# sourceURL=webpack:///./src/js/index.js?");
+
+/***/ }),
+
+/***/ "./src/js/modules/events.js":
+/*!**********************************!*\
+  !*** ./src/js/modules/events.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.addEventListenerToNodeList = addEventListenerToNodeList;\n// Events module\n\nfunction createCustomEvent(eventName, eventData) {\n  var event = void 0;\n\n  if (window.CustomEvent) {\n    event = new CustomEvent(eventName, { detail: { some: eventData } });\n  } else {\n    event = document.createEvent('CustomEvent');\n    event.initCustomEvent(eventName, true, true, { some: eventData });\n  }\n\n  return event;\n}\n\nfunction addEventListenerToNodeList(list, event, fn) {\n  for (var i = 0, len = list.length; i < len; i++) {\n    list[i].addEventListener(event, fn, false);\n  }\n}\n\nvar moduleInterface = {\n  addEventListenerToNodeList: addEventListenerToNodeList\n};\n\nexports.default = moduleInterface;\n\n//# sourceURL=webpack:///./src/js/modules/events.js?");
+
+/***/ }),
+
+/***/ "./src/js/modules/showhide.js":
+/*!************************************!*\
+  !*** ./src/js/modules/showhide.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Show/Hide Components module\n\n\nexports.buildNippers = buildNippers;\n\nvar _events = __webpack_require__(/*! ./events.js */ \"./src/js/modules/events.js\");\n\nvar events = _interopRequireWildcard(_events);\n\nfunction _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nvar selectors = {\n  selComponent: \"[data-showhide=component]\",\n  selAction: \"[data-showhide=component] [data-showhide=toggle]\",\n  selContent: \"[data-showhide=content]\"\n};\n\nvar displayClass = 'is_Open';\n\nvar ShowHide = function () {\n  function ShowHide(element) {\n    _classCallCheck(this, ShowHide);\n\n    this.nipper = element;\n    this.action = this.nipper.querySelectorAll(selectors.selAction);\n    this.content = this.nipper.querySelectorAll(selectors.selContent);\n    this.config = this.nipper.getAttribute('data-showhide-config');\n    this.animate = this.config.animate || false;\n    this.speed = this.config.speed || 200;\n    this.startState = this.config.open || false;\n\n    this.bindCustomMessageEvents();\n    this.setInitialState();\n  }\n\n  _createClass(ShowHide, [{\n    key: \"toggleControl\",\n    value: function toggleControl(element) {\n      element.classList.toggle(displayClass);\n    }\n  }, {\n    key: \"setInitialState\",\n    value: function setInitialState() {\n      if (this.startState === true) {\n        this.nipper.classList.add(displayClass);\n      }\n    }\n  }, {\n    key: \"bindCustomMessageEvents\",\n    value: function bindCustomMessageEvents() {\n      // this.nipper.addEventListener('toggleShowHide', function (e) {\n      //   e.preventDefault();\n      //   this.toggleControl();\n      // });\n      window.console.log(this.action);\n\n      events.addEventListenerToNodeList(this.action, 'click', this.toggleControl(this.nipper));\n    }\n  }]);\n\n  return ShowHide;\n}();\n\nfunction buildNippers() {\n  var nippers = document.querySelectorAll(selectors.selComponent);\n  Array.prototype.forEach.call(nippers, function (el, i) {\n    var newShowHide = new ShowHide(el);\n  });\n}\n\nvar moduleInterface = {\n  buildNippers: buildNippers\n};\n\nexports.default = moduleInterface;\n\n//# sourceURL=webpack:///./src/js/modules/showhide.js?");
 
 /***/ }),
 

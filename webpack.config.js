@@ -1,7 +1,8 @@
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const webpackDashboard = require('webpack-dashboard/plugin');
 
-module.exports = {
+const config = {
   entry: { main: './src/js'},
   output: {
     filename: 'assets/js/site.js',
@@ -19,15 +20,18 @@ module.exports = {
         use: [
           MiniCssExtractPlugin.loader,
           "css-loader",
-          'postcss-loader', 
+          'postcss-loader',
           'sass-loader'
         ]
       }
     ]
   },
   plugins: [
+    new webpackDashboard(),
     new MiniCssExtractPlugin({
       filename: "/assets/css/screen.css",
     })
   ],
 };
+
+module.exports = config;

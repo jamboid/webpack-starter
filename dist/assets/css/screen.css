@@ -2,6 +2,19 @@ body {
   color: green;
   border-radius: 10px; }
 
-body {
-  background: #ffdddd; }
+/* != Show/Hide Test component */
+.cp_ShowHide__toggle {
+  display: inline-block;
+  padding: 10px;
+  text-decoration: none;
+  border: 2px solid #ddd;
+  margin: 0 0 1em; }
+
+.cp_ShowHide__content {
+  padding: 20px;
+  background: #ddd;
+  display: none; }
+
+.cp_ShowHide.is_Open .cp_ShowHide__content {
+  display: block; }
 

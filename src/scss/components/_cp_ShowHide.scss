@@ -1,0 +1,29 @@
+/* != Show/Hide Test component */
+
+.cp_ShowHide {
+  $self: &;
+
+  &__toggle {
+    display: inline-block;
+    padding:10px;
+    text-decoration: none;
+    border:2px solid #ddd;
+    margin:0 0 1em;
+  }
+
+  &__content {
+    padding:20px;
+    background:#ddd;
+    display: none;
+  }
+
+  &.is_Open {
+    #{ $self }__toggle {
+
+    }
+
+    #{ $self }__content {
+      display: block;
+    }
+  }
+}
