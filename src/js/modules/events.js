@@ -1,4 +1,5 @@
 import * as utils from "./utils.js";
+import debounce from "debounce";
 import delegate from "delegate";
 
 // Events module
@@ -15,6 +16,22 @@ function createCustomEvent(eventName, eventData) {
   return customEvent;
 }
 
+
+function bindGlobalMessages() {
+  // Handle page scroll
+  window.addEventListener('scroll', function() {
+    // Publish global message
+
+  });
+
+  // Handle debounced resize
+  window.onresize = debounce(function() {
+    // Publish global  message
+    
+  }, 200);
+}
+
+
 /**
  * Simple factory function to bind a common delegated event listener to the <body> element
  * @function
@@ -29,12 +46,8 @@ export function createDelegatedEventListener(eventType, selector, eventToTrigger
     let customEvent = createCustomEvent(eventToTrigger, null);
     e.target.dispatchEvent(customEvent);
   }, false);
-
-
 }
 
-const moduleInterface = {
-  createDelegatedEventListener: createDelegatedEventListener
+export function initModule() {
+  bindGlobalMessages();
 }
-
-export default moduleInterface;

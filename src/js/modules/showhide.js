@@ -12,19 +12,6 @@ const selectors =  {
  * ShowHide class used to control show/hide components
  */
 class ShowHide {
-  constructor(element) {
-    this.compDOMElement = element;
-    this.action = this.compDOMElement.querySelectorAll(selectors.selAction);
-    this.content = this.compDOMElement.querySelectorAll(selectors.selContent);
-    this.config = this.compDOMElement.getAttribute('data-showhide-config');
-    this.animate = this.config.animate || false;
-    this.speed = this.config.speed || 200;
-    this.startState = this.config.open || false;
-
-    this.bindCustomMessageEvents();
-    this.setStartState();
-  }
-
   toggleControl(e) {
     e.preventDefault();
     this.compDOMElement.classList.toggle(displayClass);
@@ -39,26 +26,31 @@ class ShowHide {
   bindCustomMessageEvents() {
     this.compDOMElement.addEventListener('toggleShowHide', this.toggleControl.bind(this));
   }
+
+  constructor(element) {
+    this.compDOMElement = element;
+    this.action = this.compDOMElement.querySelectorAll(selectors.selAction);
+    this.content = this.compDOMElement.querySelectorAll(selectors.selContent);
+    this.config = this.compDOMElement.getAttribute('data-showhide-config');
+    this.animate = this.config.animate || false;
+    this.speed = this.config.speed || 200;
+    this.startState = this.config.open || false;
+
+    this.bindCustomMessageEvents();
+    this.setStartState();
+  }
 }
-
-
 
 function delegateEvents() {
   events.createDelegatedEventListener('click', selectors.selAction, 'toggleShowHide');
 }
 
-export function buildNippers() {
+export function initModule() {
   delegateEvents();
 
-  var nippers = document.querySelectorAll(selectors.selComponent);
+  var showHideComponents = document.querySelectorAll(selectors.selComponent);
 
-  Array.prototype.forEach.call(nippers, function(el, i){
-    let newShowHide = new ShowHide(el);
+  Array.prototype.forEach.call(showHideComponents, function(element, i){
+    const newShowHide = new ShowHide(element);
   });
 }
-
-const moduleInterface = {
-  buildNippers:buildNippers
-}
-
-export default moduleInterface;
