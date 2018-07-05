@@ -1,9 +1,39 @@
 // Utilities Module
 
 /**
- * outerWidth function that returns the width of an element including horizontal margins
- * @variables
+ * Returns the nearest parent element matching the selector, with the option to return the starting
+ * element if it matches.
+ * source: https://blog.wearecolony.com/a-year-without-jquery/
+ * @param   {Element}       el
+ * @param   {string}        selector
+ * @param   {boolean}       [includeSelf]
+ * @return  {Element|null}
  */
+
+export function closestParent(el, selector, includeSelf) {
+  var parent = el.parentNode;
+
+  if (includeSelf && el.matches(selector)) {
+    return el;
+  }
+
+  while (parent && parent !== document.body) {
+    if (parent.matches && parent.matches(selector)) {
+      return parent;
+    } else if (parent.parentNode) {
+      parent = parent.parentNode;
+    } else {
+      return null;
+    }
+  }
+  return null;
+}
+
+/**
+ * outerWidth function that returns the width of an element including horizontal margins
+ * @param {Element} el
+ */
+
 export function outerWidth(el) {
   let width = el.offsetWidth;
   const style = getComputedStyle(el);
@@ -14,8 +44,9 @@ export function outerWidth(el) {
 
 /**
  * outerWidth function that returns the height of an element including vertical margins
- * @variables
+ * @param {Element} el
  */
+
 export function outerHeight(el) {
   let height = el.offsetHeight;
   const style = getComputedStyle(el);
@@ -26,13 +57,14 @@ export function outerHeight(el) {
 
 /**
  * Read a page's GET URL query string variables and return them as an associative array.
- * @function
+ * @return  {Array}
  */
-export function  getURLQueryString() {
-  var vars = [], hash;
+
+export function getURLQueryString() {
+  var vars = [],
+    hash;
   var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-  for(var i = 0; i < hashes.length; i++)
-  {
+  for (var i = 0; i < hashes.length; i++) {
     hash = hashes[i].split('=');
     vars.push(hash[0]);
     vars[hash[0]] = hash[1];
@@ -45,6 +77,7 @@ export function  getURLQueryString() {
  * - e.g. &amp to &
  * @function
  */
+
 export function decodeCharacters(text) {
   var elem = document.createElement('textarea');
   elem.innerHTML = text;
@@ -55,6 +88,7 @@ export function decodeCharacters(text) {
  * Remove the style attribute from an element
  * @function
  */
+ 
 export function resetStyles(element) {
   element.setAttribute('style', '');
 }
