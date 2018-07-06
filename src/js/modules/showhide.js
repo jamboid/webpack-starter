@@ -17,7 +17,7 @@ class ShowHide {
     this.compDOMElement.classList.toggle(displayClass);
   }
 
-  setStartState() { 
+  setStartState() {
     if (this.startState === true){
       this.compDOMElement.classList.add(displayClass);
     }
@@ -45,7 +45,7 @@ function delegateEvents() {
   events.createDelegatedEventListener('click', selectors.selAction, 'toggleShowHide');
 }
 
-export function initModule() {
+export default function initModule() {
   delegateEvents();
 
   var showHideComponents = document.querySelectorAll(selectors.selComponent);

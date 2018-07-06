@@ -1,8 +1,23 @@
 import * as utils from "./utils.js";
 import debounce from "debounce";
 import delegate from "delegate";
+import PubSub from "pubsub-js";
 
-// Events module
+/**
+ * Object containing global message strings
+ * @constant
+ */
+export const messages = {
+  "resize": "page/resize",
+  "scroll": "page/scroll"
+}
+
+/**
+ * Returns a custom event object
+ * @function
+ * @param {string} eventName
+ * @param {any} eventData
+ */
 function createCustomEvent(eventName, eventData) {
   let customEvent;
 
@@ -17,17 +32,21 @@ function createCustomEvent(eventName, eventData) {
 }
 
 
+/**
+ * Binds event listeners to global browser events and fires global messages in response
+ * @function
+ */
 function bindGlobalMessages() {
   // Handle page scroll
   window.addEventListener('scroll', function() {
     // Publish global message
-
+    PubSub.publish(messages.scroll);
   });
 
   // Handle debounced resize
   window.onresize = debounce(function() {
     // Publish global  message
-
+    PubSub.publish(messages.resize);
   }, 200);
 }
 
@@ -48,6 +67,6 @@ export function createDelegatedEventListener(eventType, selector, eventToTrigger
   }, false);
 }
 
-export function initModule() {
+export default function initModule() {
   bindGlobalMessages();
 }
