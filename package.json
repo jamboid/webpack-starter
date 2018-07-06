@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "debounce": "^1.1.0",
+    "delegate": "^3.2.0",
+    "imagesloaded": "^4.1.4",
+    "pubsub-js": "^1.6.0"
+  },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
@@ -13,7 +18,7 @@
     "eslint": "^5.0.1",
     "eslint-loader": "^2.0.0",
     "mini-css-extract-plugin": "^0.4.1",
-    "node-sass": "^4.9.0",
+    "node-sass": "^4.9.1",
     "postcss-loader": "^2.1.5",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
