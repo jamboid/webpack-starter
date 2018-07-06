@@ -9,7 +9,7 @@ const selectors =  {
       displayClass = 'is_Open';
 
 /**
- * ShowHide class used to control show/hide components
+ * Class representing a Show/Hide DOM component
  */
 class ShowHide {
   toggleControl(e) {
@@ -41,15 +41,25 @@ class ShowHide {
   }
 }
 
+/**
+ * Create delegated event listeners for the components within this module
+ * @function
+ */
 function delegateEvents() {
   events.createDelegatedEventListener('click', selectors.selAction, 'toggleShowHide');
 }
 
-export default function initModule() {
+/**
+ * Initialise this module and the components contained in it
+ * @function
+ * @param { }
+ */
+export function initModule() {
+  // Create delegated event listeners for the components within this module
   delegateEvents();
 
+  // Find and initialise Show/Hide components using the ShowHide class
   var showHideComponents = document.querySelectorAll(selectors.selComponent);
-
   Array.prototype.forEach.call(showHideComponents, function(element, i){
     const newShowHide = new ShowHide(element);
   });

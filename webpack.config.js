@@ -8,6 +8,7 @@ const config = {
     filename: 'assets/js/site.js',
     path: path.resolve(__dirname, 'dist')
   },
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -19,7 +20,7 @@ const config = {
         test: /\.scss$/,
         use: [
           MiniCssExtractPlugin.loader,
-          "css-loader",
+          'css-loader',
           'postcss-loader',
           'sass-loader'
         ]

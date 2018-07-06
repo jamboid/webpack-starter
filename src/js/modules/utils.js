@@ -9,7 +9,6 @@
  * @param   {boolean}       [includeSelf]
  * @return  {Element|null}
  */
-
 export function closestParent(el, selector, includeSelf) {
   var parent = el.parentNode;
 

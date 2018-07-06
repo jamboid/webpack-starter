@@ -17,6 +17,7 @@ export const messages = {
  * @function
  * @param {string} eventName
  * @param {any} eventData
+ * &returns {Object}
  */
 function createCustomEvent(eventName, eventData) {
   let customEvent;
@@ -30,7 +31,6 @@ function createCustomEvent(eventName, eventData) {
 
   return customEvent;
 }
-
 
 /**
  * Binds event listeners to global browser events and fires global messages in response
@@ -67,6 +67,11 @@ export function createDelegatedEventListener(eventType, selector, eventToTrigger
   }, false);
 }
 
-export default function initModule() {
+/**
+ * Initialise this module and the components contained in it
+ * @function
+ * @param { }
+ */
+export function initModule() {
   bindGlobalMessages();
 }
