@@ -88,7 +88,7 @@ export function decodeCharacters(text) {
  * Remove the style attribute from an element
  * @function
  */
- 
+
 export function resetStyles(element) {
   element.setAttribute('style', '');
 }

@@ -17,7 +17,7 @@ class ShowHide {
     this.compDOMElement.classList.toggle(displayClass);
   }
 
-  setStartState() {
+  setStartState() { 
     if (this.startState === true){
       this.compDOMElement.classList.add(displayClass);
     }

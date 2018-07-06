@@ -27,7 +27,7 @@ function bindGlobalMessages() {
   // Handle debounced resize
   window.onresize = debounce(function() {
     // Publish global  message
-    
+
   }, 200);
 }
 
