@@ -699,6 +699,7 @@ var messages = exports.messages = {
    * @function
    * @param {string} eventName
    * @param {any} eventData
+   * &returns {Object}
    */
 };function createCustomEvent(eventName, eventData) {
   var customEvent = void 0;
@@ -747,6 +748,11 @@ function createDelegatedEventListener(eventType, selector, eventToTrigger) {
   }, false);
 }
 
+/**
+ * Initialise this module and the components contained in it
+ * @function
+ * @param { }
+ */
 function initModule() {
   bindGlobalMessages();
 }
@@ -788,7 +794,7 @@ var selectors = {
     displayClass = 'is_Open';
 
 /**
- * ShowHide class used to control show/hide components
+ * Class representing a Show/Hide DOM component
  */
 
 var ShowHide = function () {
@@ -830,15 +836,27 @@ var ShowHide = function () {
   return ShowHide;
 }();
 
+/**
+ * Create delegated event listeners for the components within this module
+ * @function
+ */
+
+
 function delegateEvents() {
   events.createDelegatedEventListener('click', selectors.selAction, 'toggleShowHide');
 }
 
+/**
+ * Initialise this module and the components contained in it
+ * @function
+ * @param { }
+ */
 function initModule() {
+  // Create delegated event listeners for the components within this module
   delegateEvents();
 
+  // Find and initialise Show/Hide components using the ShowHide class
   var showHideComponents = document.querySelectorAll(selectors.selComponent);
-
   Array.prototype.forEach.call(showHideComponents, function (element, i) {
     var newShowHide = new ShowHide(element);
   });
