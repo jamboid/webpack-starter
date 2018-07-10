@@ -11,12 +11,17 @@ body {
   margin: 0 0 1em; }
 
 .cp_ShowHide__content {
-  padding: 20px;
+  display: block;
+  height: 0;
+  overflow: hidden;
+  transition: height 0.25s ease-in-out; }
+
+.cp_ShowHide__contentInner {
   background: #ddd;
-  display: none; }
+  padding: 20px; }
 
 .cp_ShowHide.is_Open .cp_ShowHide__content {
-  display: block; }
+  height: auto; }
 
 
 /*# sourceMappingURL=screen.css.map*/

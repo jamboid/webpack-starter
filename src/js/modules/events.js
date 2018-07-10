@@ -1,4 +1,4 @@
-import * as utils from "./utils.js";
+//import * as utils from "./utils.js";
 import debounce from "debounce";
 import delegate from "delegate";
 import PubSub from "pubsub-js";
@@ -9,7 +9,8 @@ import PubSub from "pubsub-js";
  */
 export const messages = {
   "resize": "page/resize",
-  "scroll": "page/scroll"
+  "scroll": "page/scroll",
+  "contentChange": "page-content/change"
 }
 
 /**

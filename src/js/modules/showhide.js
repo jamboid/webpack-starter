@@ -1,5 +1,7 @@
 // Show/Hide Components module
+import PubSub from "pubsub-js";
 import * as events from "./events.js";
+import * as animation from "./animation.js";
 
 const selectors =  {
         selComponent : "[data-showhide=component]",
@@ -12,25 +14,10 @@ const selectors =  {
  * Class representing a Show/Hide DOM component
  */
 class ShowHide {
-  toggleControl(e) {
-    e.preventDefault();
-    this.compDOMElement.classList.toggle(displayClass);
-  }
-
-  setStartState() {
-    if (this.startState === true){
-      this.compDOMElement.classList.add(displayClass);
-    }
-  }
-
-  bindCustomMessageEvents() {
-    this.compDOMElement.addEventListener('toggleShowHide', this.toggleControl.bind(this));
-  }
-
   constructor(element) {
     this.compDOMElement = element;
-    this.action = this.compDOMElement.querySelectorAll(selectors.selAction);
-    this.content = this.compDOMElement.querySelectorAll(selectors.selContent);
+    this.action = this.compDOMElement.querySelectorAll(selectors.selAction)[0];
+    this.content = this.compDOMElement.querySelectorAll(selectors.selContent)[0];
     this.config = this.compDOMElement.getAttribute('data-showhide-config');
     this.animate = this.config.animate || false;
     this.speed = this.config.speed || 200;
@@ -38,6 +25,32 @@ class ShowHide {
 
     this.bindCustomMessageEvents();
     this.setStartState();
+  }
+
+  toggleControl(e) {
+    e.preventDefault();
+    //this.compDOMElement.classList.toggle(displayClass);
+
+    if(this.compDOMElement.classList.contains(displayClass)) {
+      animation.collapseElement(this.content);
+      this.compDOMElement.classList.remove(displayClass);
+    } else {
+      animation.expandElement(this.content);
+      this.compDOMElement.classList.add(displayClass);
+    }
+
+    PubSub.publish(events.messages.contentChange);
+  }
+
+  setStartState() {
+    if (this.startState === true){
+      animation.expandElement(this.content);
+      this.compDOMElement.classList.add(displayClass);
+    }
+  }
+
+  bindCustomMessageEvents() {
+    this.compDOMElement.addEventListener('toggleShowHide', this.toggleControl.bind(this));
   }
 }
 
@@ -60,7 +73,7 @@ export function initModule() {
 
   // Find and initialise Show/Hide components using the ShowHide class
   var showHideComponents = document.querySelectorAll(selectors.selComponent);
-  Array.prototype.forEach.call(showHideComponents, function(element, i){
+  Array.prototype.forEach.call(showHideComponents, function(element){
     const newShowHide = new ShowHide(element);
   });
 }
