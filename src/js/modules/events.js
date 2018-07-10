@@ -14,11 +14,12 @@ export const messages = {
 }
 
 /**
- * Returns a custom event object
- * @function
- * @param {string} eventName
- * @param {any} eventData
- * &returns {Object}
+ * createCustomEvent - Returns a custom event object
+ *
+ * @param {string} eventName Name of the custom event
+ * @param {object} eventData Associated data passed through as part of the event object
+ *
+ * @returns {object} Custom Event object
  */
 function createCustomEvent(eventName, eventData) {
   let customEvent;
@@ -34,8 +35,9 @@ function createCustomEvent(eventName, eventData) {
 }
 
 /**
- * Binds event listeners to global browser events and fires global messages in response
- * @function
+ * bindGlobalMessages - Binds event listeners to global browser events and fires global messages in response
+ *
+ * @returns {type} Description
  */
 function bindGlobalMessages() {
   // Handle page scroll
@@ -51,13 +53,12 @@ function bindGlobalMessages() {
   }, 200);
 }
 
-
 /**
- * Simple factory function to bind a common delegated event listener to the <body> element
- * @function
- * @parameter eventType (string) - the event type we're listening for
- * @parameter selector (string) - the selector for the element event is triggered on
- * @parameter eventToTrigger (string) - custom event we want to send back to target element
+ * createDelegatedEventListener - Simple factory function to bind a common delegated event listener to the <body> element
+ *
+ * @param {string} eventType      the event type we're listening for
+ * @param {string} selector       the selector for the element event is triggered on
+ * @param {string} eventToTrigger custom event we want to send back to target element
  */
 export function createDelegatedEventListener(eventType, selector, eventToTrigger) {
   delegate(document.body, selector, eventType, function(e) {
@@ -69,9 +70,9 @@ export function createDelegatedEventListener(eventType, selector, eventToTrigger
 }
 
 /**
- * Initialise this module and the components contained in it
- * @function
- * @param { }
+ * initModule - Initialise this module and the components contained in it
+ *
+ * @returns {type} Description
  */
 export function initModule() {
   bindGlobalMessages();

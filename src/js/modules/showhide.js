@@ -1,7 +1,9 @@
 // Show/Hide Components module
+
 import PubSub from "pubsub-js";
 import * as events from "./events.js";
 import * as animation from "./animation.js";
+
 
 const selectors =  {
         selComponent : "[data-showhide=component]",
@@ -11,7 +13,7 @@ const selectors =  {
       displayClass = 'is_Open';
 
 /**
- * Class representing a Show/Hide DOM component
+ * ShowHide - Class representing a Show/Hide DOM component
  */
 class ShowHide {
   constructor(element) {
@@ -54,18 +56,21 @@ class ShowHide {
   }
 }
 
+
 /**
- * Create delegated event listeners for the components within this module
- * @function
+ * delegateEvents - Create delegated event listeners for the components within this module
+ *
+ * @returns {type} Description
  */
 function delegateEvents() {
   events.createDelegatedEventListener('click', selectors.selAction, 'toggleShowHide');
 }
 
+
 /**
- * Initialise this module and the components contained in it
- * @function
- * @param { }
+ * initModule - Initialise this module and the components contained in it
+ *
+ * @returns {type} Description
  */
 export function initModule() {
   // Create delegated event listeners for the components within this module

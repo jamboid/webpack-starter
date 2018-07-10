@@ -1,9 +1,9 @@
-// Animation module - functions to aid animating page elements
+/** Animation module - functions to aid animating page elements */
 
 /**
  * Collapses an element by setting its height to 0.
  * @function
- * @param {DOM Element} element
+ * @param {element} element
  */
 export function collapseElement(element) {
   // get the height of the element's inner content, regardless of its actual size

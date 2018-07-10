@@ -643,9 +643,17 @@ var events = _interopRequireWildcard(_events);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-// Initialise Modules
-showhide.initModule();
-events.initModule();
+/**
+ * initialiseComponentModules - call module init functions
+ *
+ * @returns {type} Description
+ */
+function initialiseComponentModules() {
+  showhide.initModule();
+  events.initModule();
+}
+
+utils.ready(initialiseComponentModules);
 
 /***/ }),
 
@@ -664,12 +672,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.collapseElement = collapseElement;
 exports.expandElement = expandElement;
-// Animation module - functions to aid animating page elements
+/** Animation module - functions to aid animating page elements */
 
 /**
  * Collapses an element by setting its height to 0.
  * @function
- * @param {DOM Element} element
+ * @param {element} element
  */
 function collapseElement(element) {
   // get the height of the element's inner content, regardless of its actual size
@@ -758,11 +766,12 @@ var messages = exports.messages = {
   "contentChange": "page-content/change"
 
   /**
-   * Returns a custom event object
-   * @function
-   * @param {string} eventName
-   * @param {any} eventData
-   * &returns {Object}
+   * createCustomEvent - Returns a custom event object
+   *
+   * @param {string} eventName Name of the custom event
+   * @param {object} eventData Associated data passed through as part of the event object
+   *
+   * @returns {object} Custom Event object
    */
 }; //import * as utils from "./utils.js";
 function createCustomEvent(eventName, eventData) {
@@ -779,8 +788,9 @@ function createCustomEvent(eventName, eventData) {
 }
 
 /**
- * Binds event listeners to global browser events and fires global messages in response
- * @function
+ * bindGlobalMessages - Binds event listeners to global browser events and fires global messages in response
+ *
+ * @returns {type} Description
  */
 function bindGlobalMessages() {
   // Handle page scroll
@@ -797,11 +807,11 @@ function bindGlobalMessages() {
 }
 
 /**
- * Simple factory function to bind a common delegated event listener to the <body> element
- * @function
- * @parameter eventType (string) - the event type we're listening for
- * @parameter selector (string) - the selector for the element event is triggered on
- * @parameter eventToTrigger (string) - custom event we want to send back to target element
+ * createDelegatedEventListener - Simple factory function to bind a common delegated event listener to the <body> element
+ *
+ * @param {string} eventType      the event type we're listening for
+ * @param {string} selector       the selector for the element event is triggered on
+ * @param {string} eventToTrigger custom event we want to send back to target element
  */
 function createDelegatedEventListener(eventType, selector, eventToTrigger) {
   (0, _delegate2.default)(document.body, selector, eventType, function (e) {
@@ -813,9 +823,9 @@ function createDelegatedEventListener(eventType, selector, eventToTrigger) {
 }
 
 /**
- * Initialise this module and the components contained in it
- * @function
- * @param { }
+ * initModule - Initialise this module and the components contained in it
+ *
+ * @returns {type} Description
  */
 function initModule() {
   bindGlobalMessages();
@@ -838,7 +848,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Show/Hide Components module
-
 
 exports.initModule = initModule;
 
@@ -868,7 +877,7 @@ var selectors = {
     displayClass = 'is_Open';
 
 /**
- * Class representing a Show/Hide DOM component
+ * ShowHide - Class representing a Show/Hide DOM component
  */
 
 var ShowHide = function () {
@@ -922,8 +931,9 @@ var ShowHide = function () {
 }();
 
 /**
- * Create delegated event listeners for the components within this module
- * @function
+ * delegateEvents - Create delegated event listeners for the components within this module
+ *
+ * @returns {type} Description
  */
 
 
@@ -932,9 +942,9 @@ function delegateEvents() {
 }
 
 /**
- * Initialise this module and the components contained in it
- * @function
- * @param { }
+ * initModule - Initialise this module and the components contained in it
+ *
+ * @returns {type} Description
  */
 function initModule() {
   // Create delegated event listeners for the components within this module
@@ -968,6 +978,7 @@ exports.outerHeight = outerHeight;
 exports.getURLQueryString = getURLQueryString;
 exports.decodeCharacters = decodeCharacters;
 exports.resetStyles = resetStyles;
+exports.ready = ready;
 // Utilities Module
 
 /**
@@ -1060,6 +1071,19 @@ function decodeCharacters(text) {
 
 function resetStyles(element) {
   element.setAttribute('style', '');
+}
+
+/**
+ * ready - Call a function when the page DOM is loaded and complete
+ *
+ * @param {function} fn Description
+ */
+function ready(fn) {
+  if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+    fn();
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
 }
 
 /***/ }),
