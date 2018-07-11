@@ -1,9 +1,9 @@
 /** Animation module - functions to aid animating page elements */
 
 /**
- * Collapses an element by setting its height to 0.
- * @function
- * @param {element} element
+ * expandElement - Collapses an element by setting its height to 0.
+ *
+ * @param {DOMElement} element - A single DOM element
  */
 export function collapseElement(element) {
   // get the height of the element's inner content, regardless of its actual size
@@ -28,10 +28,11 @@ export function collapseElement(element) {
   });
 }
 
+
 /**
- * Expands an element with a height of 0 to its natural height by calculating this value.
- * @function
- * @param {DOM Element} element
+ * expandElement - Expands an element with a height of 0 to its natural height by calculating this value.
+ *
+ * @param {DOMElement} element - A single DOM element
  */
 export function expandElement(element) {
   // get the height of the element's inner content, regardless of its actual size

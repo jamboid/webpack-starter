@@ -677,7 +677,7 @@ exports.expandElement = expandElement;
 /**
  * Collapses an element by setting its height to 0.
  * @function
- * @param {element} element
+ * @param {DOMElement} element
  */
 function collapseElement(element) {
   // get the height of the element's inner content, regardless of its actual size
@@ -705,7 +705,7 @@ function collapseElement(element) {
 /**
  * Expands an element with a height of 0 to its natural height by calculating this value.
  * @function
- * @param {DOM Element} element
+ * @param {DOMElement} element
  */
 function expandElement(element) {
   // get the height of the element's inner content, regardless of its actual size
