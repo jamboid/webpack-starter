@@ -1,8 +1,8 @@
 // Show/Hide Components module
 
 import PubSub from "pubsub-js";
-import * as events from "../events/events.js";
-import * as animation from "../animation/animation.js";
+import * as events from "Modules/events/events.js";
+import * as animation from "Modules/animation/animation.js";
 
 
 const selectors =  {

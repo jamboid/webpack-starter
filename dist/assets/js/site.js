@@ -627,17 +627,17 @@ module.exports = function(module) {
 "use strict";
 
 
-__webpack_require__(/*! ../scss/screen.scss */ "./src/scss/screen.scss");
+__webpack_require__(/*! Sass/screen.scss */ "./src/scss/screen.scss");
 
-var _utils = __webpack_require__(/*! ./modules/utils/utils.js */ "./src/js/modules/utils/utils.js");
+var _utils = __webpack_require__(/*! Modules/utils/utils.js */ "./src/js/modules/utils/utils.js");
 
 var utils = _interopRequireWildcard(_utils);
 
-var _showhide = __webpack_require__(/*! ./modules/showhide/showhide.js */ "./src/js/modules/showhide/showhide.js");
+var _showhide = __webpack_require__(/*! Modules/showhide/showhide.js */ "./src/js/modules/showhide/showhide.js");
 
 var showhide = _interopRequireWildcard(_showhide);
 
-var _events = __webpack_require__(/*! ./modules/events/events.js */ "./src/js/modules/events/events.js");
+var _events = __webpack_require__(/*! Modules/events/events.js */ "./src/js/modules/events/events.js");
 
 var events = _interopRequireWildcard(_events);
 
@@ -855,11 +855,11 @@ var _pubsubJs = __webpack_require__(/*! pubsub-js */ "./node_modules/pubsub-js/s
 
 var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
 
-var _events = __webpack_require__(/*! ../events/events.js */ "./src/js/modules/events/events.js");
+var _events = __webpack_require__(/*! Modules/events/events.js */ "./src/js/modules/events/events.js");
 
 var events = _interopRequireWildcard(_events);
 
-var _animation = __webpack_require__(/*! ../animation/animation.js */ "./src/js/modules/animation/animation.js");
+var _animation = __webpack_require__(/*! Modules/animation/animation.js */ "./src/js/modules/animation/animation.js");
 
 var animation = _interopRequireWildcard(_animation);
 

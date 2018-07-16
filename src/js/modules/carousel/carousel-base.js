@@ -12,6 +12,6 @@ const selectors =  {
  */
 class Carousel {
   constructor(element) {
-    
+    this.domElement = element;
   }
 }

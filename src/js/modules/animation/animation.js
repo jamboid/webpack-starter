@@ -28,7 +28,6 @@ export function collapseElement(element) {
   });
 }
 
-
 /**
  * expandElement - Expands an element with a height of 0 to its natural height by calculating this value.
  *

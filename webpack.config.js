@@ -33,6 +33,12 @@ const config = {
       filename: "/assets/css/screen.css",
     })
   ],
+  resolve: {
+    alias: {
+      Modules: path.resolve(__dirname, 'src/js/modules/'),
+      Sass: path.resolve(__dirname, 'src/scss/')
+    }
+  }
 };
 
 module.exports = config;
