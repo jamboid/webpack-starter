@@ -629,15 +629,15 @@ module.exports = function(module) {
 
 __webpack_require__(/*! ../scss/screen.scss */ "./src/scss/screen.scss");
 
-var _utils = __webpack_require__(/*! ./modules/utils.js */ "./src/js/modules/utils.js");
+var _utils = __webpack_require__(/*! ./modules/utils/utils.js */ "./src/js/modules/utils/utils.js");
 
 var utils = _interopRequireWildcard(_utils);
 
-var _showhide = __webpack_require__(/*! ./modules/showhide.js */ "./src/js/modules/showhide.js");
+var _showhide = __webpack_require__(/*! ./modules/showhide/showhide.js */ "./src/js/modules/showhide/showhide.js");
 
 var showhide = _interopRequireWildcard(_showhide);
 
-var _events = __webpack_require__(/*! ./modules/events.js */ "./src/js/modules/events.js");
+var _events = __webpack_require__(/*! ./modules/events/events.js */ "./src/js/modules/events/events.js");
 
 var events = _interopRequireWildcard(_events);
 
@@ -657,10 +657,10 @@ utils.ready(initialiseComponentModules);
 
 /***/ }),
 
-/***/ "./src/js/modules/animation.js":
-/*!*************************************!*\
-  !*** ./src/js/modules/animation.js ***!
-  \*************************************/
+/***/ "./src/js/modules/animation/animation.js":
+/*!***********************************************!*\
+  !*** ./src/js/modules/animation/animation.js ***!
+  \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -675,9 +675,9 @@ exports.expandElement = expandElement;
 /** Animation module - functions to aid animating page elements */
 
 /**
- * Collapses an element by setting its height to 0.
- * @function
- * @param {DOMElement} element
+ * expandElement - Collapses an element by setting its height to 0.
+ *
+ * @param {DOMElement} element - A single DOM element
  */
 function collapseElement(element) {
   // get the height of the element's inner content, regardless of its actual size
@@ -703,9 +703,9 @@ function collapseElement(element) {
 }
 
 /**
- * Expands an element with a height of 0 to its natural height by calculating this value.
- * @function
- * @param {DOMElement} element
+ * expandElement - Expands an element with a height of 0 to its natural height by calculating this value.
+ *
+ * @param {DOMElement} element - A single DOM element
  */
 function expandElement(element) {
   // get the height of the element's inner content, regardless of its actual size
@@ -725,10 +725,10 @@ function expandElement(element) {
 
 /***/ }),
 
-/***/ "./src/js/modules/events.js":
-/*!**********************************!*\
-  !*** ./src/js/modules/events.js ***!
-  \**********************************/
+/***/ "./src/js/modules/events/events.js":
+/*!*****************************************!*\
+  !*** ./src/js/modules/events/events.js ***!
+  \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -833,10 +833,10 @@ function initModule() {
 
 /***/ }),
 
-/***/ "./src/js/modules/showhide.js":
-/*!************************************!*\
-  !*** ./src/js/modules/showhide.js ***!
-  \************************************/
+/***/ "./src/js/modules/showhide/showhide.js":
+/*!*********************************************!*\
+  !*** ./src/js/modules/showhide/showhide.js ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -855,11 +855,11 @@ var _pubsubJs = __webpack_require__(/*! pubsub-js */ "./node_modules/pubsub-js/s
 
 var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
 
-var _events = __webpack_require__(/*! ./events.js */ "./src/js/modules/events.js");
+var _events = __webpack_require__(/*! ../events/events.js */ "./src/js/modules/events/events.js");
 
 var events = _interopRequireWildcard(_events);
 
-var _animation = __webpack_require__(/*! ./animation.js */ "./src/js/modules/animation.js");
+var _animation = __webpack_require__(/*! ../animation/animation.js */ "./src/js/modules/animation/animation.js");
 
 var animation = _interopRequireWildcard(_animation);
 
@@ -959,10 +959,10 @@ function initModule() {
 
 /***/ }),
 
-/***/ "./src/js/modules/utils.js":
-/*!*********************************!*\
-  !*** ./src/js/modules/utils.js ***!
-  \*********************************/
+/***/ "./src/js/modules/utils/utils.js":
+/*!***************************************!*\
+  !*** ./src/js/modules/utils/utils.js ***!
+  \***************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
