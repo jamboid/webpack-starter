@@ -1,7 +1,7 @@
 import "Sass/screen.scss";
-import * as utils from "Modules/utils/utils.js";
-import * as showhide from "Modules/showhide/showhide.js";
-import * as events from "Modules/events/events.js";
+import * as utils from "Modules/Utils";
+import * as showhide from "Modules/Showhide";
+import * as events from "Modules/Events";
 
 /**
  * initialiseComponentModules - call module init functions

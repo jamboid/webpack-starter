@@ -629,17 +629,17 @@ module.exports = function(module) {
 
 __webpack_require__(/*! Sass/screen.scss */ "./src/scss/screen.scss");
 
-var _utils = __webpack_require__(/*! Modules/utils/utils.js */ "./src/js/modules/utils/utils.js");
+var _Utils = __webpack_require__(/*! Modules/Utils */ "./src/js/modules/Utils.js");
 
-var utils = _interopRequireWildcard(_utils);
+var utils = _interopRequireWildcard(_Utils);
 
-var _showhide = __webpack_require__(/*! Modules/showhide/showhide.js */ "./src/js/modules/showhide/showhide.js");
+var _Showhide = __webpack_require__(/*! Modules/Showhide */ "./src/js/modules/Showhide.js");
 
-var showhide = _interopRequireWildcard(_showhide);
+var showhide = _interopRequireWildcard(_Showhide);
 
-var _events = __webpack_require__(/*! Modules/events/events.js */ "./src/js/modules/events/events.js");
+var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
 
-var events = _interopRequireWildcard(_events);
+var events = _interopRequireWildcard(_Events);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -657,10 +657,10 @@ utils.ready(initialiseComponentModules);
 
 /***/ }),
 
-/***/ "./src/js/modules/animation/animation.js":
-/*!***********************************************!*\
-  !*** ./src/js/modules/animation/animation.js ***!
-  \***********************************************/
+/***/ "./src/js/modules/Animation.js":
+/*!*************************************!*\
+  !*** ./src/js/modules/Animation.js ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -725,10 +725,10 @@ function expandElement(element) {
 
 /***/ }),
 
-/***/ "./src/js/modules/events/events.js":
-/*!*****************************************!*\
-  !*** ./src/js/modules/events/events.js ***!
-  \*****************************************/
+/***/ "./src/js/modules/Events.js":
+/*!**********************************!*\
+  !*** ./src/js/modules/Events.js ***!
+  \**********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -833,10 +833,10 @@ function initModule() {
 
 /***/ }),
 
-/***/ "./src/js/modules/showhide/showhide.js":
-/*!*********************************************!*\
-  !*** ./src/js/modules/showhide/showhide.js ***!
-  \*********************************************/
+/***/ "./src/js/modules/Showhide.js":
+/*!************************************!*\
+  !*** ./src/js/modules/Showhide.js ***!
+  \************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -855,13 +855,13 @@ var _pubsubJs = __webpack_require__(/*! pubsub-js */ "./node_modules/pubsub-js/s
 
 var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
 
-var _events = __webpack_require__(/*! Modules/events/events.js */ "./src/js/modules/events/events.js");
+var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
 
-var events = _interopRequireWildcard(_events);
+var events = _interopRequireWildcard(_Events);
 
-var _animation = __webpack_require__(/*! Modules/animation/animation.js */ "./src/js/modules/animation/animation.js");
+var _Animation = __webpack_require__(/*! Modules/Animation */ "./src/js/modules/Animation.js");
 
-var animation = _interopRequireWildcard(_animation);
+var animation = _interopRequireWildcard(_Animation);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -959,10 +959,10 @@ function initModule() {
 
 /***/ }),
 
-/***/ "./src/js/modules/utils/utils.js":
-/*!***************************************!*\
-  !*** ./src/js/modules/utils/utils.js ***!
-  \***************************************/
+/***/ "./src/js/modules/Utils.js":
+/*!*********************************!*\
+  !*** ./src/js/modules/Utils.js ***!
+  \*********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
