@@ -631,17 +631,9 @@ __webpack_require__(/*! Sass/screen.scss */ "./src/scss/screen.scss");
 
 var _Utils = __webpack_require__(/*! Modules/Utils */ "./src/js/modules/Utils.js");
 
-var utils = _interopRequireWildcard(_Utils);
-
 var _Showhide = __webpack_require__(/*! Modules/Showhide */ "./src/js/modules/Showhide.js");
 
-var showhide = _interopRequireWildcard(_Showhide);
-
 var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
-
-var events = _interopRequireWildcard(_Events);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 /**
  * initialiseComponentModules - call module init functions
@@ -649,11 +641,11 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
  * @returns {type} Description
  */
 function initialiseComponentModules() {
-  showhide.initModule();
-  events.initModule();
+  (0, _Showhide.initModule)();
+  (0, _Events.initModule)();
 }
 
-utils.ready(initialiseComponentModules);
+(0, _Utils.ready)(initialiseComponentModules);
 
 /***/ }),
 
@@ -708,6 +700,8 @@ function collapseElement(element) {
  * @param {DOMElement} element - A single DOM element
  */
 function expandElement(element) {
+  var _arguments = arguments;
+
   // get the height of the element's inner content, regardless of its actual size
   var sectionHeight = element.scrollHeight;
 
@@ -717,11 +711,16 @@ function expandElement(element) {
   // when the next css transition finishes (which should be the one we just triggered)
   element.addEventListener('transitionend', function () {
     // remove this event listener so it only gets triggered once
-    element.removeEventListener('transitionend', arguments.callee);
+    element.removeEventListener('transitionend', _arguments.callee);
     // remove "height" from the element's inline styles, so it can return to its initial value
     element.style.height = null;
   });
 }
+
+exports.default = {
+  collapseElement: collapseElement,
+  expandElement: expandElement
+};
 
 /***/ }),
 
@@ -831,6 +830,12 @@ function initModule() {
   bindGlobalMessages();
 }
 
+exports.default = {
+  initModule: initModule,
+  messages: messages,
+  createDelegatedEventListener: createDelegatedEventListener
+};
+
 /***/ }),
 
 /***/ "./src/js/modules/Showhide.js":
@@ -857,24 +862,20 @@ var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
 
 var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
 
-var events = _interopRequireWildcard(_Events);
+var _Events2 = _interopRequireDefault(_Events);
 
 var _Animation = __webpack_require__(/*! Modules/Animation */ "./src/js/modules/Animation.js");
 
-var animation = _interopRequireWildcard(_Animation);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+var _Animation2 = _interopRequireDefault(_Animation);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var selectors = {
-  selComponent: "[data-showhide=component]",
-  selAction: "[data-showhide=component] [data-showhide=toggle]",
-  selContent: "[data-showhide=content]"
-},
-    displayClass = 'is_Open';
+var selComponent = "[data-showhide=component]";
+var selAction = "[data-showhide=component] [data-showhide=toggle]";
+var selContent = "[data-showhide=content]";
+var displayClass = 'is_Open';
 
 /**
  * ShowHide - Class representing a Show/Hide DOM component
@@ -885,8 +886,8 @@ var ShowHide = function () {
     _classCallCheck(this, ShowHide);
 
     this.compDOMElement = element;
-    this.action = this.compDOMElement.querySelectorAll(selectors.selAction)[0];
-    this.content = this.compDOMElement.querySelectorAll(selectors.selContent)[0];
+    this.action = this.compDOMElement.querySelectorAll(selAction)[0];
+    this.content = this.compDOMElement.querySelectorAll(selContent)[0];
     this.config = this.compDOMElement.getAttribute('data-showhide-config');
     this.animate = this.config.animate || false;
     this.speed = this.config.speed || 200;
@@ -903,20 +904,20 @@ var ShowHide = function () {
       //this.compDOMElement.classList.toggle(displayClass);
 
       if (this.compDOMElement.classList.contains(displayClass)) {
-        animation.collapseElement(this.content);
+        _Animation2.default.collapseElement(this.content);
         this.compDOMElement.classList.remove(displayClass);
       } else {
-        animation.expandElement(this.content);
+        _Animation2.default.expandElement(this.content);
         this.compDOMElement.classList.add(displayClass);
       }
 
-      _pubsubJs2.default.publish(events.messages.contentChange);
+      _pubsubJs2.default.publish(_Events2.default.messages.contentChange);
     }
   }, {
     key: "setStartState",
     value: function setStartState() {
       if (this.startState === true) {
-        animation.expandElement(this.content);
+        _Animation2.default.expandElement(this.content);
         this.compDOMElement.classList.add(displayClass);
       }
     }
@@ -938,9 +939,8 @@ var ShowHide = function () {
 
 
 function delegateEvents() {
-  events.createDelegatedEventListener('click', selectors.selAction, 'toggleShowHide');
+  _Events2.default.createDelegatedEventListener('click', selAction, 'toggleShowHide');
 }
-
 /**
  * initModule - Initialise this module and the components contained in it
  *
@@ -951,11 +951,15 @@ function initModule() {
   delegateEvents();
 
   // Find and initialise Show/Hide components using the ShowHide class
-  var showHideComponents = document.querySelectorAll(selectors.selComponent);
+  var showHideComponents = document.querySelectorAll(selComponent);
   Array.prototype.forEach.call(showHideComponents, function (element) {
     var newShowHide = new ShowHide(element);
   });
 }
+
+exports.default = {
+  initModule: initModule
+};
 
 /***/ }),
 
@@ -1085,6 +1089,16 @@ function ready(fn) {
     document.addEventListener('DOMContentLoaded', fn);
   }
 }
+
+exports.default = {
+  closestParent: closestParent,
+  outerWidth: outerWidth,
+  outerHeight: outerHeight,
+  getURLQueryString: getURLQueryString,
+  decodeCharacters: decodeCharacters,
+  resetStyles: resetStyles,
+  ready: ready
+};
 
 /***/ }),
 

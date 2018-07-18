@@ -1,7 +1,7 @@
 // Base Carousel module
 
 import PubSub from "pubsub-js";
-import * as events from "Modules/Events";
+import Events from "Modules/Events";
 
 const selectors =  {
         selComponent : "[data-carousel=component]"

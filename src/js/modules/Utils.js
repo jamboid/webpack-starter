@@ -10,7 +10,7 @@
  * @return  {Element|null}
  */
 export function closestParent(el, selector, includeSelf) {
-  var parent = el.parentNode;
+  let parent = el.parentNode;
 
   if (includeSelf && el.matches(selector)) {
     return el;
@@ -104,4 +104,14 @@ export function ready(fn) {
   } else {
     document.addEventListener('DOMContentLoaded', fn);
   }
+}
+
+export default {
+  closestParent:closestParent,
+  outerWidth:outerWidth,
+  outerHeight:outerHeight,
+  getURLQueryString:getURLQueryString,
+  decodeCharacters:decodeCharacters,
+  resetStyles:resetStyles,
+  ready:ready
 }
