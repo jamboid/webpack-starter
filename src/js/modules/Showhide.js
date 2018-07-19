@@ -4,7 +4,6 @@ import PubSub from "pubsub-js";
 import Events from "Modules/Events";
 import Animation from "Modules/Animation";
 
-
 const selComponent = "[data-showhide=component]";
 const selAction = "[data-showhide=component] [data-showhide=toggle]";
 const selContent = "[data-showhide=content]";
@@ -27,11 +26,11 @@ class ShowHide {
     this.setStartState();
   }
 
-  toggleControl(e) {
-    e.preventDefault();
+  toggleControl(event) {
+    event.preventDefault();
     //this.compDOMElement.classList.toggle(displayClass);
 
-    if(this.compDOMElement.classList.contains(displayClass)) {
+    if (this.compDOMElement.classList.contains(displayClass)) {
       Animation.collapseElement(this.content);
       this.compDOMElement.classList.remove(displayClass);
     } else {
@@ -43,7 +42,7 @@ class ShowHide {
   }
 
   setStartState() {
-    if (this.startState === true){
+    if (this.startState === true) {
       Animation.expandElement(this.content);
       this.compDOMElement.classList.add(displayClass);
     }
@@ -60,8 +59,9 @@ class ShowHide {
  * @returns {type} Description
  */
 function delegateEvents() {
-  Events.createDelegatedEventListener('click', selAction, 'toggleShowHide');
+  Events.delegate('click', selAction, 'toggleShowHide');
 }
+
 /**
  * initModule - Initialise this module and the components contained in it
  *
@@ -72,12 +72,10 @@ export function initModule() {
   delegateEvents();
 
   // Find and initialise Show/Hide components using the ShowHide class
-  var showHideComponents = document.querySelectorAll(selComponent);
+  const showHideComponents = document.querySelectorAll(selComponent);
   Array.prototype.forEach.call(showHideComponents, (element) => {
     const newShowHide = new ShowHide(element);
   });
 }
 
-export default {
-  initModule:initModule
-}
+export default {initModule: initModule}

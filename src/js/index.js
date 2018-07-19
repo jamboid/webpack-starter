@@ -2,6 +2,8 @@ import "Sass/screen.scss";
 import {ready} from "Modules/Utils";
 import {initModule as initShowhide} from "Modules/Showhide";
 import {initModule as initEvents} from "Modules/Events";
+import {initModule as initModal} from "Modules/Modal";
+import {initModule as initImage} from "Modules/Image";
 
 /**
  * initialiseComponentModules - call module init functions
@@ -9,8 +11,10 @@ import {initModule as initEvents} from "Modules/Events";
  * @returns {type} Description
  */
 function initialiseComponentModules() {
-  initShowhide();
   initEvents();
+  initShowhide();
+  initImage();
+  initModal();
 }
 
 ready(initialiseComponentModules);

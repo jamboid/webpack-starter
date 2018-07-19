@@ -3,9 +3,7 @@
 import PubSub from "pubsub-js";
 import Events from "Modules/Events";
 
-const selectors =  {
-        selComponent : "[data-carousel=component]"
-      };
+const selComponent = "[data-carousel=component]";
 
 /**
  * Carousel - Class representing a Carousel DOM component
@@ -23,14 +21,14 @@ class Carousel {
 /**
  * FadeCarousel - Class representing a Fade-type Carousel DOM component
  */
-class Fader extends Carousel {
+export class Fader extends Carousel {
   constructor(element) {
     super(element);
   }
 }
 
 
-class Scroll extends Carousel {
+export class Scroll extends Carousel {
   constructor(element) {
     super(element);
   }

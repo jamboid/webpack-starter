@@ -77,9 +77,9 @@ export function createDelegatedEventListener(eventType, selector, eventToTrigger
 export function initModule() {
   bindGlobalMessages();
 }
- 
+
 export default {
   initModule: initModule,
   messages:messages,
-  createDelegatedEventListener:createDelegatedEventListener
+  delegate:createDelegatedEventListener
 }

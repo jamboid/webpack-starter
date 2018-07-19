@@ -635,14 +635,20 @@ var _Showhide = __webpack_require__(/*! Modules/Showhide */ "./src/js/modules/Sh
 
 var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
 
+var _Modal = __webpack_require__(/*! Modules/Modal */ "./src/js/modules/Modal.js");
+
+var _Image = __webpack_require__(/*! Modules/Image */ "./src/js/modules/Image.js");
+
 /**
  * initialiseComponentModules - call module init functions
  *
  * @returns {type} Description
  */
 function initialiseComponentModules() {
-  (0, _Showhide.initModule)();
   (0, _Events.initModule)();
+  (0, _Showhide.initModule)();
+  (0, _Image.initModule)();
+  (0, _Modal.initModule)();
 }
 
 (0, _Utils.ready)(initialiseComponentModules);
@@ -833,8 +839,152 @@ function initModule() {
 exports.default = {
   initModule: initModule,
   messages: messages,
-  createDelegatedEventListener: createDelegatedEventListener
+  delegate: createDelegatedEventListener
 };
+
+/***/ }),
+
+/***/ "./src/js/modules/Image.js":
+/*!*********************************!*\
+  !*** ./src/js/modules/Image.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initModule = initModule;
+
+var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
+
+var _Events2 = _interopRequireDefault(_Events);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } // Image Components module
+
+var selSmartImage = "[data-image-load]";
+var selPlaceholderImage = "img";
+
+/**
+ * SmartImage - Class representing a Smart Image component that loads optimised images based on screen size
+ */
+
+var SmartImage = function SmartImage(element) {
+  _classCallCheck(this, SmartImage);
+
+  this.smartImageElem = element;
+  this.placeholderImage = this.smartImageElem.querySelector(selPlaceholderImage);
+  this.loadingMethod = this.smartImageElem.getAttribute('data-image-load');
+  this.config = this.smartImageElem.getAttribute('data-showhide-config');
+  this.imageType = this.config.type || false;
+  this.imageReloader = this.config.reload || false;
+  this.imageTargetSel = this.smartImageElem.getAttribute('data-image-target') || null;
+  this.imageLoaded = false;
+};
+
+/**
+ * delegateEvents - Create delegated event listeners for the components managed within this module
+ *
+ * @returns {type} Description
+ */
+
+
+function delegateEvents() {
+  _Events2.default.delegate('click', '[data-image-load=click]', 'loadSmartImageOnClick');
+}
+
+/**
+ * initModule - Initialise this module and the components contained in it
+ *
+ * @returns {type} Description
+ */
+function initModule() {
+  // Create delegated event listeners for the components within this module
+  delegateEvents();
+
+  // Find and initialise Show/Hide components using the ShowHide class
+  var smartImages = document.querySelectorAll(selSmartImage);
+  Array.prototype.forEach.call(smartImages, function (element) {
+    var newSmartImage = new SmartImage(element);
+  });
+}
+
+exports.default = { initModule: initModule };
+
+/***/ }),
+
+/***/ "./src/js/modules/Modal.js":
+/*!*********************************!*\
+  !*** ./src/js/modules/Modal.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initModule = initModule;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// Modal Components Module
+
+var selAction = '[data-modal="link"]';
+var templateModal = '\n  <div class="cp_Modal" data-modal="component">\n    <div class="cp_Modal__screen"></div>\n    <div class="cp_Modal__content"></div>\n  </div>\n';
+
+/**
+ * Modal - Class that reper
+ */
+
+var Modal = function Modal() {
+  _classCallCheck(this, Modal);
+};
+
+/**
+ * ModalLinkManager - Class for managing links that generate page modals
+ */
+
+
+var ModalLinkManager = function ModalLinkManager() {
+  _classCallCheck(this, ModalLinkManager);
+};
+
+/**
+ * delegateEvents - Create delegated event listeners for the components managed within this module
+ *
+ * @returns {type} Description
+ */
+
+
+function delegateEvents() {}
+//Events.createDelegatedEventListener('click', selAction, 'toggleShowHide');
+
+
+/**
+ * initModule - Initialise this module and the components contained in it
+ *
+ * @returns {type} Description
+ */
+function initModule() {
+  // Create delegated event listeners for the components within this module
+  delegateEvents();
+
+  // Find and initialise Show/Hide components using the ShowHide class
+  var showHideComponents = document.querySelectorAll(selComponent);
+  Array.prototype.forEach.call(showHideComponents, function (element) {
+    var newShowHide = new ShowHide(element);
+  });
+}
+
+exports.default = { initModule: initModule };
 
 /***/ }),
 
@@ -899,8 +1049,8 @@ var ShowHide = function () {
 
   _createClass(ShowHide, [{
     key: "toggleControl",
-    value: function toggleControl(e) {
-      e.preventDefault();
+    value: function toggleControl(event) {
+      event.preventDefault();
       //this.compDOMElement.classList.toggle(displayClass);
 
       if (this.compDOMElement.classList.contains(displayClass)) {
@@ -939,8 +1089,9 @@ var ShowHide = function () {
 
 
 function delegateEvents() {
-  _Events2.default.createDelegatedEventListener('click', selAction, 'toggleShowHide');
+  _Events2.default.delegate('click', selAction, 'toggleShowHide');
 }
+
 /**
  * initModule - Initialise this module and the components contained in it
  *
@@ -957,9 +1108,7 @@ function initModule() {
   });
 }
 
-exports.default = {
-  initModule: initModule
-};
+exports.default = { initModule: initModule };
 
 /***/ }),
 
