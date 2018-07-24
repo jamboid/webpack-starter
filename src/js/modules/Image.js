@@ -10,6 +10,13 @@ const selPlaceholderImage = "img";
  * SmartImage - Class representing a Smart Image component that loads optimised images based on screen size
  */
 class SmartImage {
+  /**
+   * constructor - Description
+   *
+   * @param {type} element Description
+   *
+   * @returns {type} Description
+   */
   constructor(element) {
     this.smartImageElem = element;
     this.placeholderImage = this.smartImageElem.querySelector(selPlaceholderImage);

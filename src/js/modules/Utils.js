@@ -1,8 +1,7 @@
 // Utilities Module
 
 /**
- * Returns the nearest parent element matching the selector, with the option to return the starting
- * element if it matches.
+ * Returns the nearest parent element matching the selector, with the option to return the starting element if it matches.
  * source: https://blog.wearecolony.com/a-year-without-jquery/
  * @param   {Element}       el
  * @param   {string}        selector
@@ -92,6 +91,20 @@ export function resetStyles(element) {
   element.setAttribute('style', '');
 }
 
+/**
+ * getOffset - Return an object with the top and left offsets of an element
+ *
+ * @param {element} el Single DOM element
+ *
+ * @returns {object} Simple object with left and top properties
+ */
+export function getOffset(el) {
+  el = el.getBoundingClientRect();
+  return {
+    left: el.left + window.scrollX,
+    top: el.top + window.scrollY
+  }
+}
 
 /**
  * ready - Call a function when the page DOM is loaded and complete
@@ -113,5 +126,6 @@ export default {
   getURLQueryString:getURLQueryString,
   decodeCharacters:decodeCharacters,
   resetStyles:resetStyles,
+  getOffset:getOffset,
   ready:ready
 }

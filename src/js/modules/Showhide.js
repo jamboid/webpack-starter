@@ -13,6 +13,13 @@ const displayClass = 'is_Open';
  * ShowHide - Class representing a Show/Hide DOM component
  */
 class ShowHide {
+  /**
+   * constructor - Description
+   *
+   * @param {object} element DOM element
+   *
+   * @returns {type} Description
+   */
   constructor(element) {
     this.compDOMElement = element;
     this.action = this.compDOMElement.querySelectorAll(selAction)[0];

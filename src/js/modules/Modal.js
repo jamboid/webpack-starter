@@ -45,14 +45,6 @@ function delegateEvents() {
 export function initModule() {
   // Create delegated event listeners for the components within this module
   delegateEvents();
-
-  // Find and initialise Show/Hide components using the ShowHide class
-  const showHideComponents = document.querySelectorAll(selComponent);
-  Array.prototype.forEach.call(showHideComponents, (element) => {
-    const newShowHide = new ShowHide(element);
-  });
-
-
 }
 
 export default {initModule: initModule}

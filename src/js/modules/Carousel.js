@@ -21,7 +21,7 @@ class Carousel {
 /**
  * FadeCarousel - Class representing a Fade-type Carousel DOM component
  */
-export class Fader extends Carousel {
+export class Fader extends Carousel {  
   constructor(element) {
     super(element);
   }
