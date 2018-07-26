@@ -1375,6 +1375,8 @@ var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events
 
 var _Events2 = _interopRequireDefault(_Events);
 
+var _Utils = __webpack_require__(/*! Modules/Utils */ "./src/js/modules/Utils.js");
+
 var _imagesloaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
 
 var _imagesloaded2 = _interopRequireDefault(_imagesloaded);
@@ -1408,12 +1410,21 @@ var SmartImage = function () {
 
     if (this.loadingMethod === 'pageload') {
       this.getImageFile();
+    } else if (this.loadingMethod === 'view') {
+      this.loadImageIfInView();
     }
   }
 
+  /**
+   * calculateImageBreakpointToUse - Description
+   *
+   * @returns {string} Description
+   */
+
+
   _createClass(SmartImage, [{
-    key: "calculateImageSrcToUse",
-    value: function calculateImageSrcToUse() {
+    key: "calculateImageBreakpointToUse",
+    value: function calculateImageBreakpointToUse() {
       var pageWidth = window.innerWidth;
       var imageSrcKey = "max";
 
@@ -1499,6 +1510,33 @@ var SmartImage = function () {
     }
 
     /**
+     * displayImageAsBackground - Description
+     *
+     * @param {type} path Description
+     *
+     */
+
+  }, {
+    key: "displayImageAsBackground",
+    value: function displayImageAsBackground(path) {
+      var smartImage = 'url(' + path + ')';
+      var imageBackgroundPos = this.smartImageElem.getAttribute('data-position');
+      var imageBackgroundColor = this.smartImageElem.getAttribute('data-background-color');
+
+      this.smartImageElem.classList.add('ob_Image--loaded');
+      this.smartImageElem.style.backgroundImage(smartImage);
+      this.smartImageElem.classList.add(imageBackgroundPos);
+      this.smartImageElem.style.backgroundColor(imageBackgroundColor);
+
+      window.setTimeout(function () {
+        this.smartImageElem.classList.add('ob_Image--displayed');
+        _pubsubJs2.default.publish('content/update');
+      }, 50);
+
+      this.imageLoaded = true;
+    }
+
+    /**
      * Create and preload a new image based on a sprite src
      * then call a function once the image is loaded into memory
      * @function
@@ -1509,30 +1547,18 @@ var SmartImage = function () {
     value: function getImageFile() {
       var _this2 = this;
 
-      window.console.log(this.calculateImageSrcToUse());
-      window.console.log(this.srcSet);
-      var thisImageUrl = this.srcSet[this.calculateImageSrcToUse()];
+      var thisImageUrl = this.srcSet[this.calculateImageBreakpointToUse()];
 
       //Site.utils.cl("image url: " + thisImageUrl);
 
       if (thisImageUrl !== 'none') {
         this.smartImageElem.classList.remove('is_Hidden');
-
         this.imageToAdd.setAttribute('src', thisImageUrl);
 
         var imageLoader = (0, _imagesloaded2.default)(this.imageToAdd);
 
-        window.console.log(this.imageType);
-
         if (this.imageType === 'inline') {
-          // The imagesLoaded function is called for image we want to load.
-          // The initial callback is the displayImageInContainer function to add the
-          // image to the page, or swap the image src with an existing placeholder.
-          // NOTE: This happens *immediately*. Making this the callback of the imagesLoaded function doesn't delay this.
-          //this.imageToAdd.imagesLoaded(this.displayImageInContainer(this.imageToAdd))
-
           imageLoader.on('done', function () {
-
             _this2.smartImageElem.classList.remove('ob_Image--loading');
             _this2.displayImageInContainer(_this2.imageToAdd);
             // We send a Global message indicating a change in page layout
@@ -1580,21 +1606,25 @@ var SmartImage = function () {
     }
 
     /**
-     * Check if a sprite is in view, and if so load and display it
-     * @function
+     * loadImageIfInView - Description
+     *
      */
-    // loadImageIfInView() {
-    //   if(this.imageType === 'inline') {
-    //     if(Site.utils.isElementInView(this.smartImageElem) && (this.imageLoaded === false || this.imageReloader === true)){
-    //       this.getImageFile(this.smartImageElem);
-    //     }
-    //   } else if(this.imageType === 'background') {
-    //     if(Site.utils.isElementInView(this.smartImageElem.parent()) && (this.imageLoaded === false || this.imageReloader === true)){
-    //       this.getImageFile(this.smartImageElem);
-    //     }
-    //   }
-    // }
 
+  }, {
+    key: "loadImageIfInView",
+    value: function loadImageIfInView() {
+      console.log('here');
+
+      if (this.imageType === 'inline') {
+        if ((0, _Utils.isElementInView)(this.smartImageElem) && (this.imageLoaded === false || this.imageReloader === true)) {
+          this.getImageFile(this.smartImageElem);
+        }
+      } else if (this.imageType === 'background') {
+        if ((0, _Utils.isElementInView)(this.smartImageElem.parentNode) && (this.imageLoaded === false || this.imageReloader === true)) {
+          this.getImageFile(this.smartImageElem);
+        }
+      }
+    }
 
     /**
      * loadSmartImage - Description
@@ -1956,6 +1986,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.closestParent = closestParent;
+exports.isElementInView = isElementInView;
 exports.outerWidth = outerWidth;
 exports.outerHeight = outerHeight;
 exports.getURLQueryString = getURLQueryString;
@@ -1990,6 +2021,29 @@ function closestParent(el, selector, includeSelf) {
     }
   }
   return null;
+}
+
+/**
+ * isElementInView - Description
+ *
+ * @param {object} element Description
+ *
+ * @returns {boolean} Description
+ */
+function isElementInView(element) {
+  var windowHeight = window.innerHeight;
+  var scrollTop = window.scrollY;
+  var elementOffset = element.getBoundingClientRect();
+  var elementTop = elementOffset.top;
+  var elementHeight = element.offsetHeight;
+
+  if (elementTop < scrollTop + windowHeight && elementTop + elementHeight > scrollTop) {
+    return true;
+  } else if (elementTop + elementHeight > scrollTop && elementTop + elementHeight < scrollTop + windowHeight) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -2091,6 +2145,7 @@ function ready(fn) {
 
 exports.default = {
   closestParent: closestParent,
+  isElementInView: isElementInView,
   outerWidth: outerWidth,
   outerHeight: outerHeight,
   getURLQueryString: getURLQueryString,

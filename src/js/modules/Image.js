@@ -3,6 +3,7 @@
 // Imports
 import PubSub from "pubsub-js";
 import Events from "Modules/Events";
+import {isElementInView as inView} from "Modules/Utils";
 import imagesLoaded from "imagesloaded";
 
 const selSmartImage = "[data-image-load]";
@@ -28,11 +29,18 @@ class SmartImage {
 
     if (this.loadingMethod === 'pageload') {
       this.getImageFile();
+    } else if (this.loadingMethod === 'view') {
+      this.loadImageIfInView();
     }
   }
 
 
-  calculateImageSrcToUse() {
+  /**
+   * calculateImageBreakpointToUse - Description
+   *
+   * @returns {string} Description
+   */
+  calculateImageBreakpointToUse() {
     const pageWidth = window.innerWidth;
     let imageSrcKey = "max";
 
@@ -120,37 +128,47 @@ class SmartImage {
 
 
   /**
+   * displayImageAsBackground - Description
+   *
+   * @param {type} path Description
+   *
+   */
+  displayImageAsBackground(path) {
+    const smartImage = 'url(' + path + ')';
+    const imageBackgroundPos = this.smartImageElem.getAttribute('data-position');
+    const imageBackgroundColor = this.smartImageElem.getAttribute('data-background-color');
+
+    this.smartImageElem.classList.add('ob_Image--loaded');
+    this.smartImageElem.style.backgroundImage(smartImage);
+    this.smartImageElem.classList.add(imageBackgroundPos);
+    this.smartImageElem.style.backgroundColor(imageBackgroundColor);
+
+    window.setTimeout(function () {
+      this.smartImageElem.classList.add('ob_Image--displayed');
+      PubSub.publish('content/update');
+    }, 50);
+
+    this.imageLoaded = true;
+  }
+
+  /**
    * Create and preload a new image based on a sprite src
    * then call a function once the image is loaded into memory
    * @function
    */
   getImageFile() {
-    window.console.log(this.calculateImageSrcToUse());
-    window.console.log(this.srcSet);
-    const thisImageUrl = this.srcSet[this.calculateImageSrcToUse()];
+    const thisImageUrl = this.srcSet[this.calculateImageBreakpointToUse()];
 
       //Site.utils.cl("image url: " + thisImageUrl);
 
       if(thisImageUrl !== 'none'){
         this.smartImageElem.classList.remove('is_Hidden');
-
         this.imageToAdd.setAttribute('src',thisImageUrl);
 
         const imageLoader = imagesLoaded(this.imageToAdd);
 
-        window.console.log(this.imageType);
-
-
         if(this.imageType === 'inline') {
-          // The imagesLoaded function is called for image we want to load.
-          // The initial callback is the displayImageInContainer function to add the
-          // image to the page, or swap the image src with an existing placeholder.
-          // NOTE: This happens *immediately*. Making this the callback of the imagesLoaded function doesn't delay this.
-          //this.imageToAdd.imagesLoaded(this.displayImageInContainer(this.imageToAdd))
-
           imageLoader.on('done',() => {
-
-
             this.smartImageElem.classList.remove('ob_Image--loading');
             this.displayImageInContainer(this.imageToAdd);
             // We send a Global message indicating a change in page layout
@@ -199,20 +217,22 @@ class SmartImage {
   }
 
   /**
-   * Check if a sprite is in view, and if so load and display it
-   * @function
+   * loadImageIfInView - Description
+   *
    */
-  // loadImageIfInView() {
-  //   if(this.imageType === 'inline') {
-  //     if(Site.utils.isElementInView(this.smartImageElem) && (this.imageLoaded === false || this.imageReloader === true)){
-  //       this.getImageFile(this.smartImageElem);
-  //     }
-  //   } else if(this.imageType === 'background') {
-  //     if(Site.utils.isElementInView(this.smartImageElem.parent()) && (this.imageLoaded === false || this.imageReloader === true)){
-  //       this.getImageFile(this.smartImageElem);
-  //     }
-  //   }
-  // }
+  loadImageIfInView() {
+    console.log('here');
+
+    if(this.imageType === 'inline') {
+      if(inView(this.smartImageElem) && (this.imageLoaded === false || this.imageReloader === true)){
+        this.getImageFile(this.smartImageElem);
+      }
+    } else if(this.imageType === 'background') {
+      if(inView(this.smartImageElem.parentNode) && (this.imageLoaded === false || this.imageReloader === true)){
+        this.getImageFile(this.smartImageElem);
+      }
+    }
+  }
 
 
   /**

@@ -27,6 +27,30 @@ export function closestParent(el, selector, includeSelf) {
   return null;
 }
 
+
+/**
+ * isElementInView - Description
+ *
+ * @param {object} element Description
+ *
+ * @returns {boolean} Description
+ */
+export function isElementInView(element) {
+  const windowHeight = window.innerHeight;
+  const scrollTop = window.scrollY;
+  const elementOffset = element.getBoundingClientRect();
+  const elementTop = elementOffset.top;
+  const elementHeight = element.offsetHeight;
+
+  if ( elementTop < (scrollTop + windowHeight)  && (elementTop + elementHeight) > scrollTop ) {
+    return true;
+  } else if ( (elementTop + elementHeight) > scrollTop && (elementTop + elementHeight) < (scrollTop + windowHeight) ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 /**
  * outerWidth - function that returns the width of an element including horizontal margins
  *
@@ -126,6 +150,7 @@ export function ready(fn) {
 
 export default {
   closestParent:closestParent,
+  isElementInView:isElementInView,
   outerWidth:outerWidth,
   outerHeight:outerHeight,
   getURLQueryString:getURLQueryString,
