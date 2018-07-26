@@ -5,8 +5,9 @@ import Events from "Modules/Events";
 
 const selComponent = "[data-carousel=component]";
 
+
 /**
- * Carousel - Class representing a Carousel DOM component
+ * Carousel - Description
  */
 class Carousel {
   constructor(element) {
@@ -18,17 +19,22 @@ class Carousel {
   }
 }
 
+
 /**
- * FadeCarousel - Class representing a Fade-type Carousel DOM component
+ * Fader - Description
+ * @extends Carousel
  */
-export class Fader extends Carousel {  
+export class Fader extends Carousel {
   constructor(element) {
     super(element);
   }
 }
 
-
-export class Scroll extends Carousel {
+/**
+ * Scroller - Description
+ * @extends Carousel
+ */
+export class Scroller extends Carousel {
   constructor(element) {
     super(element);
   }

@@ -10,8 +10,11 @@ import PubSub from "pubsub-js";
 export const messages = {
   "resize": "page/resize",
   "scroll": "page/scroll",
-  "contentChange": "page-content/change"
-}
+  "load": "page/load",
+  "contentChange": "page-content/change",
+  "layoutChange": "layout/change",
+  "breakChange" : "breakpoint/change"
+} 
 
 /**
  * createCustomEvent - Returns a custom event object

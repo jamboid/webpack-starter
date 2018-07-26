@@ -296,6 +296,504 @@ module.exports = delegate;
 
 /***/ }),
 
+/***/ "./node_modules/ev-emitter/ev-emitter.js":
+/*!***********************************************!*\
+  !*** ./node_modules/ev-emitter/ev-emitter.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * EvEmitter v1.1.0
+ * Lil' event emitter
+ * MIT License
+ */
+
+/* jshint unused: true, undef: true, strict: true */
+
+( function( global, factory ) {
+  // universal module definition
+  /* jshint strict: false */ /* globals define, module, window */
+  if ( true ) {
+    // AMD - RequireJS
+    !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+
+}( typeof window != 'undefined' ? window : this, function() {
+
+"use strict";
+
+function EvEmitter() {}
+
+var proto = EvEmitter.prototype;
+
+proto.on = function( eventName, listener ) {
+  if ( !eventName || !listener ) {
+    return;
+  }
+  // set events hash
+  var events = this._events = this._events || {};
+  // set listeners array
+  var listeners = events[ eventName ] = events[ eventName ] || [];
+  // only add once
+  if ( listeners.indexOf( listener ) == -1 ) {
+    listeners.push( listener );
+  }
+
+  return this;
+};
+
+proto.once = function( eventName, listener ) {
+  if ( !eventName || !listener ) {
+    return;
+  }
+  // add event
+  this.on( eventName, listener );
+  // set once flag
+  // set onceEvents hash
+  var onceEvents = this._onceEvents = this._onceEvents || {};
+  // set onceListeners object
+  var onceListeners = onceEvents[ eventName ] = onceEvents[ eventName ] || {};
+  // set flag
+  onceListeners[ listener ] = true;
+
+  return this;
+};
+
+proto.off = function( eventName, listener ) {
+  var listeners = this._events && this._events[ eventName ];
+  if ( !listeners || !listeners.length ) {
+    return;
+  }
+  var index = listeners.indexOf( listener );
+  if ( index != -1 ) {
+    listeners.splice( index, 1 );
+  }
+
+  return this;
+};
+
+proto.emitEvent = function( eventName, args ) {
+  var listeners = this._events && this._events[ eventName ];
+  if ( !listeners || !listeners.length ) {
+    return;
+  }
+  // copy over to avoid interference if .off() in listener
+  listeners = listeners.slice(0);
+  args = args || [];
+  // once stuff
+  var onceListeners = this._onceEvents && this._onceEvents[ eventName ];
+
+  for ( var i=0; i < listeners.length; i++ ) {
+    var listener = listeners[i]
+    var isOnce = onceListeners && onceListeners[ listener ];
+    if ( isOnce ) {
+      // remove listener
+      // remove before trigger to prevent recursion
+      this.off( eventName, listener );
+      // unset once flag
+      delete onceListeners[ listener ];
+    }
+    // trigger listener
+    listener.apply( this, args );
+  }
+
+  return this;
+};
+
+proto.allOff = function() {
+  delete this._events;
+  delete this._onceEvents;
+};
+
+return EvEmitter;
+
+}));
+
+
+/***/ }),
+
+/***/ "./node_modules/imagesloaded/imagesloaded.js":
+/*!***************************************************!*\
+  !*** ./node_modules/imagesloaded/imagesloaded.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * imagesLoaded v4.1.4
+ * JavaScript is all like "You images are done yet or what?"
+ * MIT License
+ */
+
+( function( window, factory ) { 'use strict';
+  // universal module definition
+
+  /*global define: false, module: false, require: false */
+
+  if ( true ) {
+    // AMD
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+      __webpack_require__(/*! ev-emitter/ev-emitter */ "./node_modules/ev-emitter/ev-emitter.js")
+    ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( EvEmitter ) {
+      return factory( window, EvEmitter );
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+
+})( typeof window !== 'undefined' ? window : this,
+
+// --------------------------  factory -------------------------- //
+
+function factory( window, EvEmitter ) {
+
+'use strict';
+
+var $ = window.jQuery;
+var console = window.console;
+
+// -------------------------- helpers -------------------------- //
+
+// extend objects
+function extend( a, b ) {
+  for ( var prop in b ) {
+    a[ prop ] = b[ prop ];
+  }
+  return a;
+}
+
+var arraySlice = Array.prototype.slice;
+
+// turn element or nodeList into an array
+function makeArray( obj ) {
+  if ( Array.isArray( obj ) ) {
+    // use object if already an array
+    return obj;
+  }
+
+  var isArrayLike = typeof obj == 'object' && typeof obj.length == 'number';
+  if ( isArrayLike ) {
+    // convert nodeList to array
+    return arraySlice.call( obj );
+  }
+
+  // array of single index
+  return [ obj ];
+}
+
+// -------------------------- imagesLoaded -------------------------- //
+
+/**
+ * @param {Array, Element, NodeList, String} elem
+ * @param {Object or Function} options - if function, use as callback
+ * @param {Function} onAlways - callback function
+ */
+function ImagesLoaded( elem, options, onAlways ) {
+  // coerce ImagesLoaded() without new, to be new ImagesLoaded()
+  if ( !( this instanceof ImagesLoaded ) ) {
+    return new ImagesLoaded( elem, options, onAlways );
+  }
+  // use elem as selector string
+  var queryElem = elem;
+  if ( typeof elem == 'string' ) {
+    queryElem = document.querySelectorAll( elem );
+  }
+  // bail if bad element
+  if ( !queryElem ) {
+    console.error( 'Bad element for imagesLoaded ' + ( queryElem || elem ) );
+    return;
+  }
+
+  this.elements = makeArray( queryElem );
+  this.options = extend( {}, this.options );
+  // shift arguments if no options set
+  if ( typeof options == 'function' ) {
+    onAlways = options;
+  } else {
+    extend( this.options, options );
+  }
+
+  if ( onAlways ) {
+    this.on( 'always', onAlways );
+  }
+
+  this.getImages();
+
+  if ( $ ) {
+    // add jQuery Deferred object
+    this.jqDeferred = new $.Deferred();
+  }
+
+  // HACK check async to allow time to bind listeners
+  setTimeout( this.check.bind( this ) );
+}
+
+ImagesLoaded.prototype = Object.create( EvEmitter.prototype );
+
+ImagesLoaded.prototype.options = {};
+
+ImagesLoaded.prototype.getImages = function() {
+  this.images = [];
+
+  // filter & find items if we have an item selector
+  this.elements.forEach( this.addElementImages, this );
+};
+
+/**
+ * @param {Node} element
+ */
+ImagesLoaded.prototype.addElementImages = function( elem ) {
+  // filter siblings
+  if ( elem.nodeName == 'IMG' ) {
+    this.addImage( elem );
+  }
+  // get background image on element
+  if ( this.options.background === true ) {
+    this.addElementBackgroundImages( elem );
+  }
+
+  // find children
+  // no non-element nodes, #143
+  var nodeType = elem.nodeType;
+  if ( !nodeType || !elementNodeTypes[ nodeType ] ) {
+    return;
+  }
+  var childImgs = elem.querySelectorAll('img');
+  // concat childElems to filterFound array
+  for ( var i=0; i < childImgs.length; i++ ) {
+    var img = childImgs[i];
+    this.addImage( img );
+  }
+
+  // get child background images
+  if ( typeof this.options.background == 'string' ) {
+    var children = elem.querySelectorAll( this.options.background );
+    for ( i=0; i < children.length; i++ ) {
+      var child = children[i];
+      this.addElementBackgroundImages( child );
+    }
+  }
+};
+
+var elementNodeTypes = {
+  1: true,
+  9: true,
+  11: true
+};
+
+ImagesLoaded.prototype.addElementBackgroundImages = function( elem ) {
+  var style = getComputedStyle( elem );
+  if ( !style ) {
+    // Firefox returns null if in a hidden iframe https://bugzil.la/548397
+    return;
+  }
+  // get url inside url("...")
+  var reURL = /url\((['"])?(.*?)\1\)/gi;
+  var matches = reURL.exec( style.backgroundImage );
+  while ( matches !== null ) {
+    var url = matches && matches[2];
+    if ( url ) {
+      this.addBackground( url, elem );
+    }
+    matches = reURL.exec( style.backgroundImage );
+  }
+};
+
+/**
+ * @param {Image} img
+ */
+ImagesLoaded.prototype.addImage = function( img ) {
+  var loadingImage = new LoadingImage( img );
+  this.images.push( loadingImage );
+};
+
+ImagesLoaded.prototype.addBackground = function( url, elem ) {
+  var background = new Background( url, elem );
+  this.images.push( background );
+};
+
+ImagesLoaded.prototype.check = function() {
+  var _this = this;
+  this.progressedCount = 0;
+  this.hasAnyBroken = false;
+  // complete if no images
+  if ( !this.images.length ) {
+    this.complete();
+    return;
+  }
+
+  function onProgress( image, elem, message ) {
+    // HACK - Chrome triggers event before object properties have changed. #83
+    setTimeout( function() {
+      _this.progress( image, elem, message );
+    });
+  }
+
+  this.images.forEach( function( loadingImage ) {
+    loadingImage.once( 'progress', onProgress );
+    loadingImage.check();
+  });
+};
+
+ImagesLoaded.prototype.progress = function( image, elem, message ) {
+  this.progressedCount++;
+  this.hasAnyBroken = this.hasAnyBroken || !image.isLoaded;
+  // progress event
+  this.emitEvent( 'progress', [ this, image, elem ] );
+  if ( this.jqDeferred && this.jqDeferred.notify ) {
+    this.jqDeferred.notify( this, image );
+  }
+  // check if completed
+  if ( this.progressedCount == this.images.length ) {
+    this.complete();
+  }
+
+  if ( this.options.debug && console ) {
+    console.log( 'progress: ' + message, image, elem );
+  }
+};
+
+ImagesLoaded.prototype.complete = function() {
+  var eventName = this.hasAnyBroken ? 'fail' : 'done';
+  this.isComplete = true;
+  this.emitEvent( eventName, [ this ] );
+  this.emitEvent( 'always', [ this ] );
+  if ( this.jqDeferred ) {
+    var jqMethod = this.hasAnyBroken ? 'reject' : 'resolve';
+    this.jqDeferred[ jqMethod ]( this );
+  }
+};
+
+// --------------------------  -------------------------- //
+
+function LoadingImage( img ) {
+  this.img = img;
+}
+
+LoadingImage.prototype = Object.create( EvEmitter.prototype );
+
+LoadingImage.prototype.check = function() {
+  // If complete is true and browser supports natural sizes,
+  // try to check for image status manually.
+  var isComplete = this.getIsImageComplete();
+  if ( isComplete ) {
+    // report based on naturalWidth
+    this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
+    return;
+  }
+
+  // If none of the checks above matched, simulate loading on detached element.
+  this.proxyImage = new Image();
+  this.proxyImage.addEventListener( 'load', this );
+  this.proxyImage.addEventListener( 'error', this );
+  // bind to image as well for Firefox. #191
+  this.img.addEventListener( 'load', this );
+  this.img.addEventListener( 'error', this );
+  this.proxyImage.src = this.img.src;
+};
+
+LoadingImage.prototype.getIsImageComplete = function() {
+  // check for non-zero, non-undefined naturalWidth
+  // fixes Safari+InfiniteScroll+Masonry bug infinite-scroll#671
+  return this.img.complete && this.img.naturalWidth;
+};
+
+LoadingImage.prototype.confirm = function( isLoaded, message ) {
+  this.isLoaded = isLoaded;
+  this.emitEvent( 'progress', [ this, this.img, message ] );
+};
+
+// ----- events ----- //
+
+// trigger specified handler for event type
+LoadingImage.prototype.handleEvent = function( event ) {
+  var method = 'on' + event.type;
+  if ( this[ method ] ) {
+    this[ method ]( event );
+  }
+};
+
+LoadingImage.prototype.onload = function() {
+  this.confirm( true, 'onload' );
+  this.unbindEvents();
+};
+
+LoadingImage.prototype.onerror = function() {
+  this.confirm( false, 'onerror' );
+  this.unbindEvents();
+};
+
+LoadingImage.prototype.unbindEvents = function() {
+  this.proxyImage.removeEventListener( 'load', this );
+  this.proxyImage.removeEventListener( 'error', this );
+  this.img.removeEventListener( 'load', this );
+  this.img.removeEventListener( 'error', this );
+};
+
+// -------------------------- Background -------------------------- //
+
+function Background( url, element ) {
+  this.url = url;
+  this.element = element;
+  this.img = new Image();
+}
+
+// inherit LoadingImage prototype
+Background.prototype = Object.create( LoadingImage.prototype );
+
+Background.prototype.check = function() {
+  this.img.addEventListener( 'load', this );
+  this.img.addEventListener( 'error', this );
+  this.img.src = this.url;
+  // check if image is already complete
+  var isComplete = this.getIsImageComplete();
+  if ( isComplete ) {
+    this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
+    this.unbindEvents();
+  }
+};
+
+Background.prototype.unbindEvents = function() {
+  this.img.removeEventListener( 'load', this );
+  this.img.removeEventListener( 'error', this );
+};
+
+Background.prototype.confirm = function( isLoaded, message ) {
+  this.isLoaded = isLoaded;
+  this.emitEvent( 'progress', [ this, this.element, message ] );
+};
+
+// -------------------------- jQuery -------------------------- //
+
+ImagesLoaded.makeJQueryPlugin = function( jQuery ) {
+  jQuery = jQuery || window.jQuery;
+  if ( !jQuery ) {
+    return;
+  }
+  // set local variable
+  $ = jQuery;
+  // $().imagesLoaded()
+  $.fn.imagesLoaded = function( options, callback ) {
+    var instance = new ImagesLoaded( this, options, callback );
+    return instance.jqDeferred.promise( $(this) );
+  };
+};
+// try making plugin
+ImagesLoaded.makeJQueryPlugin();
+
+// --------------------------  -------------------------- //
+
+return ImagesLoaded;
+
+});
+
+
+/***/ }),
+
 /***/ "./node_modules/pubsub-js/src/pubsub.js":
 /*!**********************************************!*\
   !*** ./node_modules/pubsub-js/src/pubsub.js ***!
@@ -768,7 +1266,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var messages = exports.messages = {
   "resize": "page/resize",
   "scroll": "page/scroll",
-  "contentChange": "page-content/change"
+  "load": "page/load",
+  "contentChange": "page-content/change",
+  "layoutChange": "layout/change",
+  "breakChange": "breakpoint/change"
 
   /**
    * createCustomEvent - Returns a custom event object
@@ -857,43 +1358,338 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Image Components module
+
+// Imports
+
+
+exports.initialiseSmartImages = initialiseSmartImages;
 exports.initModule = initModule;
+
+var _pubsubJs = __webpack_require__(/*! pubsub-js */ "./node_modules/pubsub-js/src/pubsub.js");
+
+var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
 
 var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
 
 var _Events2 = _interopRequireDefault(_Events);
 
+var _imagesloaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
+
+var _imagesloaded2 = _interopRequireDefault(_imagesloaded);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } // Image Components module
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var selSmartImage = "[data-image-load]";
+var selClickToLoadSmartImage = "[data-image-load=click]";
 var selPlaceholderImage = "img";
 
 /**
  * SmartImage - Class representing a Smart Image component that loads optimised images based on screen size
  */
 
-var SmartImage =
-/**
- * constructor - Description
- *
- * @param {type} element Description
- *
- * @returns {type} Description
- */
-function SmartImage(element) {
-  _classCallCheck(this, SmartImage);
+var SmartImage = function () {
+  function SmartImage(element) {
+    _classCallCheck(this, SmartImage);
 
-  this.smartImageElem = element;
-  this.placeholderImage = this.smartImageElem.querySelector(selPlaceholderImage);
-  this.loadingMethod = this.smartImageElem.getAttribute('data-image-load');
-  this.config = this.smartImageElem.getAttribute('data-showhide-config');
-  this.imageType = this.config.type || false;
-  this.imageReloader = this.config.reload || false;
-  this.imageTargetSel = this.smartImageElem.getAttribute('data-image-target') || null;
-  this.imageLoaded = false;
-};
+    this.smartImageElem = element;
+    this.placeholderImage = this.smartImageElem.querySelector(selPlaceholderImage);
+    this.loadingMethod = this.smartImageElem.getAttribute('data-image-load');
+    this.config = JSON.parse(this.smartImageElem.getAttribute('data-image-config'));
+    this.imageType = this.config.type || false;
+    this.imageReloader = this.config.reload || false;
+    this.imageTargetSel = this.smartImageElem.getAttribute('data-image-target') || null;
+    this.imageLoaded = false;
+    this.imageToAdd = document.createElement('img');
+    this.srcSet = JSON.parse(this.smartImageElem.getAttribute('data-src-set')) || {};
+
+    if (this.loadingMethod === 'pageload') {
+      this.getImageFile();
+    }
+  }
+
+  _createClass(SmartImage, [{
+    key: "calculateImageSrcToUse",
+    value: function calculateImageSrcToUse() {
+      var pageWidth = window.innerWidth;
+      var imageSrcKey = "max";
+
+      for (var key in this.srcSet) {
+        if (this.srcSet.hasOwnProperty(key)) {
+          // If the current key is not 'max' check that the page width is less than it,
+          // and it is less than the current value for imageSrcKey
+          if (key !== 'max') {
+            // If imageSrcKey is not set to 'max' check if the key
+            // is greater or equal than the page width and also if it
+            // is less than the current value of imageSrcKey
+            if (imageSrcKey !== 'max') {
+              if (parseInt(key) >= pageWidth && parseInt(key) < imageSrcKey) {
+                imageSrcKey = key;
+              }
+            }
+            // If imageSrcKey is still set to 'max' just check if the key
+            // is greater or equal than the page width
+            else {
+                if (parseInt(key) > pageWidth) {
+                  imageSrcKey = key;
+                }
+              }
+          }
+        }
+      }
+
+      return imageSrcKey;
+    }
+
+    /**
+     * Display a pre-loaded lazy image, adding atrributes set on
+     * the sprite container
+     * @function
+     * @parameter path (String)
+     */
+
+  }, {
+    key: "displayImageInContainer",
+    value: function displayImageInContainer() {
+      var _this = this;
+
+      var imageAlt = this.smartImageElem.getAttribute('data-alt') || 'image';
+      var imageWidth = this.smartImageElem.getAttribute('data-width');
+      var imageClass = this.smartImageElem.getAttribute('data-class');
+
+      // Add 'loading' class to SmartImage container
+      this.smartImageElem.classList.add('ob_Image--loading');
+
+      if (imageAlt.length > 0) {
+        this.imageToAdd.getAttribute('alt', imageAlt);
+      }
+
+      if (imageWidth) {
+        this.imageToAdd.getAttribute('width', imageWidth);
+      }
+
+      if (imageClass) {
+        this.imageToAdd.addClass(imageClass);
+      }
+
+      if (this.placeholderImage) {
+        this.placeholderImage.getAttribute('src', this.imageToAdd.getAttribute('src')).removeClass('placeholder').removeAttr('width').removeAttr('height');
+      } else {
+
+        if (this.imageTargetSel !== null) {
+          //this.smartImageElem.parent().find(imageTargetSel).eq(0).append(this.imageToAdd);
+        } else {
+          this.smartImageElem.insertBefore(this.imageToAdd, null);
+        }
+
+        this.placeholderImage = this.imageToAdd;
+      }
+
+      this.smartImageElem.classList.add('ob_Image--loaded');
+      // Need to allow browser a moment to process the addition of the image before displaying it
+      window.setTimeout(function () {
+        _this.smartImageElem.classList.add('ob_Image--displayed');
+        _pubsubJs2.default.publish('content/update');
+      }, 50);
+
+      this.imageLoaded = true;
+    }
+
+    /**
+     * Create and preload a new image based on a sprite src
+     * then call a function once the image is loaded into memory
+     * @function
+     */
+
+  }, {
+    key: "getImageFile",
+    value: function getImageFile() {
+      var _this2 = this;
+
+      window.console.log(this.calculateImageSrcToUse());
+      window.console.log(this.srcSet);
+      var thisImageUrl = this.srcSet[this.calculateImageSrcToUse()];
+
+      //Site.utils.cl("image url: " + thisImageUrl);
+
+      if (thisImageUrl !== 'none') {
+        this.smartImageElem.classList.remove('is_Hidden');
+
+        this.imageToAdd.setAttribute('src', thisImageUrl);
+
+        var imageLoader = (0, _imagesloaded2.default)(this.imageToAdd);
+
+        window.console.log(this.imageType);
+
+        if (this.imageType === 'inline') {
+          // The imagesLoaded function is called for image we want to load.
+          // The initial callback is the displayImageInContainer function to add the
+          // image to the page, or swap the image src with an existing placeholder.
+          // NOTE: This happens *immediately*. Making this the callback of the imagesLoaded function doesn't delay this.
+          //this.imageToAdd.imagesLoaded(this.displayImageInContainer(this.imageToAdd))
+
+          imageLoader.on('done', function () {
+
+            _this2.smartImageElem.classList.remove('ob_Image--loading');
+            _this2.displayImageInContainer(_this2.imageToAdd);
+            // We send a Global message indicating a change in page layout
+            _pubsubJs2.default.publish(_Events2.default.messages.imageLoaded);
+            _pubsubJs2.default.publish(_Events2.default.messages.layoutChange);
+          });
+        } else if (this.imageType === 'background') {
+
+          // The imagesLoaded function is called for image we want to load.
+          // There is no initial callback because everything we want to do can wait
+          // until the image is fully downloaded.
+          imageLoader.on('done', function () {
+            // Add the class that gives the container its layout
+            _this2.smartImageElem.classList.add('ob_Image--flex');
+            // We call the function that adds the correct CSS to the the container
+            _this2.displayImageAsBackground(thisImageUrl);
+            // We send a Global message indicating a change in page layout
+            _pubsubJs2.default.publish(_Events2.default.messages.imageLoaded);
+            _pubsubJs2.default.publish(_Events2.default.messages.layoutChange);
+          });
+        }
+      } else {
+        this.smartImageElem.addClass('is_Hidden');
+      }
+    }
+
+    /**
+     * Load and display a smart image - use this when being in view doesn't matter
+     * @function
+     */
+
+  }, {
+    key: "loadImage",
+    value: function loadImage() {
+      if (this.imageType === 'inline') {
+        if (this.imageLoaded === false || this.imageReloader === true) {
+          this.getImageFile(this.smartImageElem);
+        }
+      } else if (this.imageType === 'background') {
+        this.smartImageElem.classList.add('ob_Image--flex');
+        if (this.imageLoaded === false || this.imageReloader === true) {
+          this.getImageFile(this.smartImageElem);
+        }
+      }
+    }
+
+    /**
+     * Check if a sprite is in view, and if so load and display it
+     * @function
+     */
+    // loadImageIfInView() {
+    //   if(this.imageType === 'inline') {
+    //     if(Site.utils.isElementInView(this.smartImageElem) && (this.imageLoaded === false || this.imageReloader === true)){
+    //       this.getImageFile(this.smartImageElem);
+    //     }
+    //   } else if(this.imageType === 'background') {
+    //     if(Site.utils.isElementInView(this.smartImageElem.parent()) && (this.imageLoaded === false || this.imageReloader === true)){
+    //       this.getImageFile(this.smartImageElem);
+    //     }
+    //   }
+    // }
+
+
+    /**
+     * loadSmartImage - Description
+     *
+     * @param {event} e Description
+     */
+
+  }, {
+    key: "loadSmartImage",
+    value: function loadSmartImage(e) {
+      e.preventDefault();
+
+      if (this.imageLoaded === false) {
+        this.loadImageIfInView(this.smartImageElem);
+      }
+    }
+
+    /**
+     * reloadImage - Description
+     *
+     * @param {event} e Description
+     */
+
+  }, {
+    key: "reloadImage",
+    value: function reloadImage(e) {
+      e.preventDefault();
+
+      if (this.imageLoaded === true && this.imageReloader === true) {
+        this.getImageFile();
+      }
+    }
+
+    /**
+     * loadSmartImageOnClick - Description
+     *
+     * @param {event} e Description
+     */
+
+  }, {
+    key: "loadSmartImageOnClick",
+    value: function loadSmartImageOnClick(e) {
+      e.preventDefault();
+
+      if (this.imageLoaded === false) {
+        this.loadImage(this.smartImageElem);
+      }
+    }
+
+    /**
+     * bindCustomMessageEvents - Binds custom event listeners to the Smart Image DOM Element
+     *
+     */
+
+  }, {
+    key: "bindCustomMessageEvents",
+    value: function bindCustomMessageEvents() {
+      this.smartImageElem.addEventListener('siLoad', this.loadSmartImage().bind(this));
+      this.smartImageElem.addEventListener('siReload', this.reloadImage().bind(this));
+      this.smartImageElem.addEventListener('siClickLoad', this.loadSmartImageOnClick().bind(this));
+    }
+
+    /**
+     * subscribeToEvents - Subscribes the component to global messages and sets the component's responses via internal custom events
+     *
+     */
+
+  }, {
+    key: "subscribeToEvents",
+    value: function subscribeToEvents() {
+      var _this3 = this;
+
+      if (this.loadingMethod === 'view') {
+        _pubsubJs2.default.subscribe(_Events2.default.messages.scroll, function () {
+          _this3.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
+        });
+        _pubsubJs2.default.subscribe(_Events2.default.messages.load, function () {
+          _this3.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
+        });
+        _pubsubJs2.default.subscribe(_Events2.default.messages.layoutChange, function () {
+          _this3.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
+        });
+      }
+
+      _pubsubJs2.default.subscribe(_Events2.default.messages.resize, function () {
+        _this3.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siReload'));
+      });
+      _pubsubJs2.default.subscribe(_Events2.default.messages.breakChange, function () {
+        _this3.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siReload'));
+      });
+    }
+  }]);
+
+  return SmartImage;
+}();
 
 /**
  * delegateEvents - Create delegated event listeners for the components managed within this module
@@ -903,7 +1699,14 @@ function SmartImage(element) {
 
 
 function delegateEvents() {
-  _Events2.default.delegate('click', '[data-image-load=click]', 'loadSmartImageOnClick');
+  _Events2.default.delegate('click', selClickToLoadSmartImage, 'siClickLoad');
+}
+
+function initialiseSmartImages() {
+  var smartImages = document.querySelectorAll(selSmartImage);
+  Array.prototype.forEach.call(smartImages, function (element) {
+    var newSmartImage = new SmartImage(element);
+  });
 }
 
 /**
@@ -916,10 +1719,7 @@ function initModule() {
   delegateEvents();
 
   // Find and initialise Show/Hide components using the ShowHide class
-  var smartImages = document.querySelectorAll(selSmartImage);
-  Array.prototype.forEach.call(smartImages, function (element) {
-    var newSmartImage = new SmartImage(element);
-  });
+  initialiseSmartImages();
 }
 
 exports.default = { initModule: initModule };
@@ -1056,6 +1856,13 @@ var ShowHide = function () {
     this.setStartState();
   }
 
+  /**
+   * toggleControl - Description
+   *
+   * @param {type} event Description
+   */
+
+
   _createClass(ShowHide, [{
     key: "toggleControl",
     value: function toggleControl(event) {
@@ -1072,6 +1879,13 @@ var ShowHide = function () {
 
       _pubsubJs2.default.publish(_Events2.default.messages.contentChange);
     }
+
+    /**
+     * setStartState - Description
+     *
+     * @returns {type} Description
+     */
+
   }, {
     key: "setStartState",
     value: function setStartState() {
@@ -1080,6 +1894,13 @@ var ShowHide = function () {
         this.compDOMElement.classList.add(displayClass);
       }
     }
+
+    /**
+     * bindCustomMessageEvents - Description
+     *
+     * @returns {type} Description
+     */
+
   }, {
     key: "bindCustomMessageEvents",
     value: function bindCustomMessageEvents() {
@@ -1172,12 +1993,14 @@ function closestParent(el, selector, includeSelf) {
 }
 
 /**
- * outerWidth function that returns the width of an element including horizontal margins
- * @param {Element} el
+ * outerWidth - function that returns the width of an element including horizontal margins
+ *
+ * @param {object} el - Single DOM element
+ *
+ * @returns {int} calculated outer width of el
  */
-
 function outerWidth(el) {
-  var width = el.offsetWidth;
+  var width = parseInt(el.offsetWidth);
   var style = getComputedStyle(el);
 
   width += parseInt(style.marginLeft) + parseInt(style.marginRight);
@@ -1190,7 +2013,7 @@ function outerWidth(el) {
  */
 
 function outerHeight(el) {
-  var height = el.offsetHeight;
+  var height = parseInt(el.offsetHeight);
   var style = getComputedStyle(el);
 
   height += parseInt(style.marginTop) + parseInt(style.marginBottom);
@@ -1215,11 +2038,12 @@ function getURLQueryString() {
 }
 
 /**
- * Convert any encoded characters in a string to their unencoded versions
- * - e.g. &amp to &
- * @function
+ * decodeCharacters - Convert any encoded characters in a string to their unencoded versions - e.g. &amp to &
+ *
+ * @param {string} text
+ *
+ * @returns {string}
  */
-
 function decodeCharacters(text) {
   var elem = document.createElement('textarea');
   elem.innerHTML = text;
@@ -1227,10 +2051,12 @@ function decodeCharacters(text) {
 }
 
 /**
- * Remove the style attribute from an element
- * @function
+ * resetStyles - Remove the style attribute from an element
+ *
+ * @param {type} element Description
+ *
+ * @returns {type} Description
  */
-
 function resetStyles(element) {
   element.setAttribute('style', '');
 }

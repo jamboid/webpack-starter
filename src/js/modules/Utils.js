@@ -28,12 +28,14 @@ export function closestParent(el, selector, includeSelf) {
 }
 
 /**
- * outerWidth function that returns the width of an element including horizontal margins
- * @param {Element} el
+ * outerWidth - function that returns the width of an element including horizontal margins
+ *
+ * @param {object} el - Single DOM element
+ *
+ * @returns {int} calculated outer width of el
  */
-
 export function outerWidth(el) {
-  let width = el.offsetWidth;
+  let width = parseInt(el.offsetWidth);
   const style = getComputedStyle(el);
 
   width += parseInt(style.marginLeft) + parseInt(style.marginRight);
@@ -46,7 +48,7 @@ export function outerWidth(el) {
  */
 
 export function outerHeight(el) {
-  let height = el.offsetHeight;
+  let height = parseInt(el.offsetHeight);
   const style = getComputedStyle(el);
 
   height += parseInt(style.marginTop) + parseInt(style.marginBottom);
@@ -71,11 +73,12 @@ export function getURLQueryString() {
 }
 
 /**
- * Convert any encoded characters in a string to their unencoded versions
- * - e.g. &amp to &
- * @function
+ * decodeCharacters - Convert any encoded characters in a string to their unencoded versions - e.g. &amp to &
+ *
+ * @param {string} text
+ *
+ * @returns {string}
  */
-
 export function decodeCharacters(text) {
   var elem = document.createElement('textarea');
   elem.innerHTML = text;
@@ -83,10 +86,12 @@ export function decodeCharacters(text) {
 }
 
 /**
- * Remove the style attribute from an element
- * @function
+ * resetStyles - Remove the style attribute from an element
+ *
+ * @param {type} element Description
+ *
+ * @returns {type} Description
  */
-
 export function resetStyles(element) {
   element.setAttribute('style', '');
 }

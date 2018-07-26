@@ -33,6 +33,12 @@ class ShowHide {
     this.setStartState();
   }
 
+
+  /**
+   * toggleControl - Description
+   *
+   * @param {type} event Description
+   */
   toggleControl(event) {
     event.preventDefault();
     //this.compDOMElement.classList.toggle(displayClass);
@@ -48,6 +54,12 @@ class ShowHide {
     PubSub.publish(Events.messages.contentChange);
   }
 
+
+  /**
+   * setStartState - Description
+   *
+   * @returns {type} Description
+   */
   setStartState() {
     if (this.startState === true) {
       Animation.expandElement(this.content);
@@ -55,10 +67,17 @@ class ShowHide {
     }
   }
 
+
+  /**
+   * bindCustomMessageEvents - Description
+   *
+   * @returns {type} Description
+   */
   bindCustomMessageEvents() {
     this.compDOMElement.addEventListener('toggleShowHide', this.toggleControl.bind(this));
   }
 }
+
 
 /**
  * delegateEvents - Create delegated event listeners for the components within this module

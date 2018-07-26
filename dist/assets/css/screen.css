@@ -1,5 +1,6 @@
 body {
-  color: green;
+  font-family: sans-serif;
+  color: blue;
   border-radius: 10px; }
 
 /* != Show/Hide Test component */
@@ -22,6 +23,9 @@ body {
 
 .cp_ShowHide.is_Open .cp_ShowHide__content {
   height: auto; }
+
+.cp_SmartImage img {
+  max-width: 800px; }
 
 
 /*# sourceMappingURL=screen.css.map*/
