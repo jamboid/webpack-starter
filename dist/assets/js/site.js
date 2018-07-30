@@ -1554,7 +1554,7 @@ var SmartImage = function () {
 
       if (thisImageUrl !== 'none') {
         this.smartImageElem.classList.remove('is_Hidden');
-        this.imageToAdd.setAttribute('src', thisImageUrl);
+        this.imageToAdd.src = thisImageUrl;
 
         var imageLoader = (0, _imagesloaded2.default)(this.imageToAdd);
 

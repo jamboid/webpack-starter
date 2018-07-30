@@ -157,7 +157,7 @@ class SmartImage {
 
     if (thisImageUrl !== 'none') {
       this.smartImageElem.classList.remove('is_Hidden');
-      this.imageToAdd.setAttribute('src', thisImageUrl);
+      this.imageToAdd.src = thisImageUrl;
 
       const imageLoader = imagesLoaded(this.imageToAdd);
 
