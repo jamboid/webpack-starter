@@ -25,7 +25,12 @@ body {
   height: auto; }
 
 .cp_SmartImage img {
+  width: 100%;
   max-width: 800px; }
+
+.cp_SmartImage--background {
+  padding-top: 60%;
+  background-size: cover; }
 
 
 /*# sourceMappingURL=screen.css.map*/

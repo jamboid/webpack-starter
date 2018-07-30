@@ -1362,14 +1362,11 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Image Components module
 
 // Imports
+// import PubSub from "pubsub-js";
 
 
 exports.initialiseSmartImages = initialiseSmartImages;
 exports.initModule = initModule;
-
-var _pubsubJs = __webpack_require__(/*! pubsub-js */ "./node_modules/pubsub-js/src/pubsub.js");
-
-var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
 
 var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
 
@@ -1399,14 +1396,14 @@ var SmartImage = function () {
 
     this.smartImageElem = element;
     this.placeholderImage = this.smartImageElem.querySelector(selPlaceholderImage);
-    this.loadingMethod = this.smartImageElem.getAttribute('data-image-load');
-    this.config = JSON.parse(this.smartImageElem.getAttribute('data-image-config'));
+    this.loadingMethod = this.smartImageElem.dataset.imageLoad;
+    this.config = JSON.parse(this.smartImageElem.dataset.imageConfig);
     this.imageType = this.config.type || false;
     this.imageReloader = this.config.reload || false;
-    this.imageTargetSel = this.smartImageElem.getAttribute('data-image-target') || null;
+    this.imageTargetSel = this.smartImageElem.dataset.imageTarget || null;
     this.imageLoaded = false;
     this.imageToAdd = document.createElement('img');
-    this.srcSet = JSON.parse(this.smartImageElem.getAttribute('data-src-set')) || {};
+    this.srcSet = JSON.parse(this.smartImageElem.dataset.srcSet) || {};
 
     if (this.loadingMethod === 'pageload') {
       this.getImageFile();
@@ -1439,15 +1436,14 @@ var SmartImage = function () {
             if (imageSrcKey !== 'max') {
               if (parseInt(key) >= pageWidth && parseInt(key) < imageSrcKey) {
                 imageSrcKey = key;
+                // If imageSrcKey is still set to 'max' just check if the key
+                // is greater or equal than the page width
+              }
+            } else {
+              if (parseInt(key) > pageWidth) {
+                imageSrcKey = key;
               }
             }
-            // If imageSrcKey is still set to 'max' just check if the key
-            // is greater or equal than the page width
-            else {
-                if (parseInt(key) > pageWidth) {
-                  imageSrcKey = key;
-                }
-              }
           }
         }
       }
@@ -1467,19 +1463,19 @@ var SmartImage = function () {
     value: function displayImageInContainer() {
       var _this = this;
 
-      var imageAlt = this.smartImageElem.getAttribute('data-alt') || 'image';
-      var imageWidth = this.smartImageElem.getAttribute('data-width');
-      var imageClass = this.smartImageElem.getAttribute('data-class');
+      var imageAlt = this.smartImageElem.dataset.alt || 'image';
+      var imageWidth = this.smartImageElem.dataset.width;
+      var imageClass = this.smartImageElem.dataset.class;
 
       // Add 'loading' class to SmartImage container
       this.smartImageElem.classList.add('ob_Image--loading');
 
       if (imageAlt.length > 0) {
-        this.imageToAdd.getAttribute('alt', imageAlt);
+        this.imageToAdd.alt = imageAlt;
       }
 
       if (imageWidth) {
-        this.imageToAdd.getAttribute('width', imageWidth);
+        this.imageToAdd.width = imageWidth;
       }
 
       if (imageClass) {
@@ -1487,7 +1483,10 @@ var SmartImage = function () {
       }
 
       if (this.placeholderImage) {
-        this.placeholderImage.getAttribute('src', this.imageToAdd.getAttribute('src')).removeClass('placeholder').removeAttr('width').removeAttr('height');
+        this.placeholderImage.src = this.imageToAdd.src;
+        this.placeholderImage.classList.remove('placeholder');
+        this.placeholderImage.removeAttribute('width');
+        this.placeholderImage.removeAttribute('height');
       } else {
 
         if (this.imageTargetSel !== null) {
@@ -1503,7 +1502,7 @@ var SmartImage = function () {
       // Need to allow browser a moment to process the addition of the image before displaying it
       window.setTimeout(function () {
         _this.smartImageElem.classList.add('ob_Image--displayed');
-        _pubsubJs2.default.publish('content/update');
+        PubSub.publish('content/update');
       }, 50);
 
       this.imageLoaded = true;
@@ -1519,18 +1518,20 @@ var SmartImage = function () {
   }, {
     key: "displayImageAsBackground",
     value: function displayImageAsBackground(path) {
+      var _this2 = this;
+
       var smartImage = 'url(' + path + ')';
-      var imageBackgroundPos = this.smartImageElem.getAttribute('data-position');
-      var imageBackgroundColor = this.smartImageElem.getAttribute('data-background-color');
+      var imageBackgroundPos = this.smartImageElem.dataset.position;
+      var imageBackgroundColor = this.smartImageElem.dataset.backgroundColor;
 
       this.smartImageElem.classList.add('ob_Image--loaded');
-      this.smartImageElem.style.backgroundImage(smartImage);
+      this.smartImageElem.style.backgroundImage = smartImage;
       this.smartImageElem.classList.add(imageBackgroundPos);
-      this.smartImageElem.style.backgroundColor(imageBackgroundColor);
+      this.smartImageElem.style.backgroundColor = imageBackgroundColor;
 
       window.setTimeout(function () {
-        this.smartImageElem.classList.add('ob_Image--displayed');
-        _pubsubJs2.default.publish('content/update');
+        _this2.smartImageElem.classList.add('ob_Image--displayed');
+        PubSub.publish('content/update');
       }, 50);
 
       this.imageLoaded = true;
@@ -1545,7 +1546,7 @@ var SmartImage = function () {
   }, {
     key: "getImageFile",
     value: function getImageFile() {
-      var _this2 = this;
+      var _this3 = this;
 
       var thisImageUrl = this.srcSet[this.calculateImageBreakpointToUse()];
 
@@ -1559,11 +1560,11 @@ var SmartImage = function () {
 
         if (this.imageType === 'inline') {
           imageLoader.on('done', function () {
-            _this2.smartImageElem.classList.remove('ob_Image--loading');
-            _this2.displayImageInContainer(_this2.imageToAdd);
+            _this3.smartImageElem.classList.remove('ob_Image--loading');
+            _this3.displayImageInContainer(_this3.imageToAdd);
             // We send a Global message indicating a change in page layout
-            _pubsubJs2.default.publish(_Events2.default.messages.imageLoaded);
-            _pubsubJs2.default.publish(_Events2.default.messages.layoutChange);
+            PubSub.publish(_Events2.default.messages.imageLoaded);
+            PubSub.publish(_Events2.default.messages.layoutChange);
           });
         } else if (this.imageType === 'background') {
 
@@ -1572,12 +1573,12 @@ var SmartImage = function () {
           // until the image is fully downloaded.
           imageLoader.on('done', function () {
             // Add the class that gives the container its layout
-            _this2.smartImageElem.classList.add('ob_Image--flex');
+            _this3.smartImageElem.classList.add('ob_Image--flex');
             // We call the function that adds the correct CSS to the the container
-            _this2.displayImageAsBackground(thisImageUrl);
+            _this3.displayImageAsBackground(thisImageUrl);
             // We send a Global message indicating a change in page layout
-            _pubsubJs2.default.publish(_Events2.default.messages.imageLoaded);
-            _pubsubJs2.default.publish(_Events2.default.messages.layoutChange);
+            PubSub.publish(_Events2.default.messages.imageLoaded);
+            PubSub.publish(_Events2.default.messages.layoutChange);
           });
         }
       } else {
@@ -1695,25 +1696,25 @@ var SmartImage = function () {
   }, {
     key: "subscribeToEvents",
     value: function subscribeToEvents() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.loadingMethod === 'view') {
-        _pubsubJs2.default.subscribe(_Events2.default.messages.scroll, function () {
-          _this3.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
+        PubSub.subscribe(_Events2.default.messages.scroll, function () {
+          _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
         });
-        _pubsubJs2.default.subscribe(_Events2.default.messages.load, function () {
-          _this3.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
+        PubSub.subscribe(_Events2.default.messages.load, function () {
+          _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
         });
-        _pubsubJs2.default.subscribe(_Events2.default.messages.layoutChange, function () {
-          _this3.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
+        PubSub.subscribe(_Events2.default.messages.layoutChange, function () {
+          _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
         });
       }
 
-      _pubsubJs2.default.subscribe(_Events2.default.messages.resize, function () {
-        _this3.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siReload'));
+      PubSub.subscribe(_Events2.default.messages.resize, function () {
+        _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siReload'));
       });
-      _pubsubJs2.default.subscribe(_Events2.default.messages.breakChange, function () {
-        _this3.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siReload'));
+      PubSub.subscribe(_Events2.default.messages.breakChange, function () {
+        _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siReload'));
       });
     }
   }]);
