@@ -1170,6 +1170,10 @@ exports.collapseElement = collapseElement;
 exports.expandElement = expandElement;
 /** Animation module - functions to aid animating page elements */
 
+//////////////////////
+// Module Functions //
+//////////////////////
+
 /**
  * expandElement - Collapses an element by setting its height to 0.
  *
@@ -1259,6 +1263,10 @@ var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//////////////////////
+// Module Constants //
+//////////////////////
+
 /**
  * Object containing global message strings
  * @constant
@@ -1271,6 +1279,10 @@ var messages = exports.messages = {
   "layoutChange": "layout/change",
   "breakChange": "breakpoint/change"
 
+  /////////////////////////
+  // Classes & Functions //
+  /////////////////////////
+
   /**
    * createCustomEvent - Returns a custom event object
    *
@@ -1279,7 +1291,10 @@ var messages = exports.messages = {
    *
    * @returns {object} Custom Event object
    */
-}; //import * as utils from "./utils.js";
+}; ////////////////////
+// Module Imports //
+////////////////////
+
 function createCustomEvent(eventName, eventData) {
   var customEvent = void 0;
 
@@ -1481,7 +1496,7 @@ var SmartImage = function () {
     /**
      * updateImageAttributes - Description
      *
-     * @param {object} image Description
+     * @param {Element} image <img> html element
      *
      */
 
@@ -1799,12 +1814,20 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.initModule = initModule;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _pubsubJs = __webpack_require__(/*! pubsub-js */ "./node_modules/pubsub-js/src/pubsub.js");
 
-// Modal Components Module
+var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
+
+var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
+
+var _Events2 = _interopRequireDefault(_Events);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } // Modal Components Module
 
 var selAction = '[data-modal="link"]';
-var templateModal = '\n  <div class="cp_Modal" data-modal="component">\n    <div class="cp_Modal__screen"></div>\n    <div class="cp_Modal__content"></div>\n  </div>\n';
+var templateModal = "\n  <div class=\"cp_Modal\" data-modal=\"component\">\n    <div class=\"cp_Modal__screen\"></div>\n    <div class=\"cp_Modal__content\"></div>\n  </div>\n";
 
 /**
  * Modal - Class that reper
@@ -1830,9 +1853,9 @@ var ModalLinkManager = function ModalLinkManager() {
  */
 
 
-function delegateEvents() {}
-//Events.createDelegatedEventListener('click', selAction, 'toggleShowHide');
-
+function delegateEvents() {
+  _Events2.default.delegate('click', selAction, 'toggleShowHide');
+}
 
 /**
  * initModule - Initialise this module and the components contained in it

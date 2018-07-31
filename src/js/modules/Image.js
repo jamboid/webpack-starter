@@ -95,11 +95,10 @@ class SmartImage {
     return imageSrcKey;
   }
 
-
   /**
    * updateImageAttributes - Description
    *
-   * @param {object} image Description
+   * @param {Element} image <img> html element
    *
    */
   updateImageAttributes(image) {

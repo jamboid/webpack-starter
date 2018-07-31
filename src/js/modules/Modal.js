@@ -1,5 +1,9 @@
 // Modal Components Module
 
+import PubSub from "pubsub-js";
+import Events from "Modules/Events";
+
+
 const selAction = '[data-modal="link"]';
 const templateModal = `
   <div class="cp_Modal" data-modal="component">
@@ -34,7 +38,7 @@ class ModalLinkManager {
  * @returns {type} Description
  */
 function delegateEvents() {
-  //Events.createDelegatedEventListener('click', selAction, 'toggleShowHide');
+  Events.delegate('click', selAction, 'toggleShowHide');
 }
 
 /**
