@@ -3,22 +3,25 @@
 
 .ob_Image {
   line-height: 0;
+  opacity: 0;
 
   img {
     max-width:100%;
     height:auto;
   }
 
+
   &--loaded {
     opacity: 0;
     transition:opacity 1s ease;
   }
 
-  &--displayed {
+  &--displayed,
+  &--hasPlaceholder {
     opacity: 1;
   }
 
-  &.is_Hidden {
+  &--isHidden {
     display: none;
   }
 }

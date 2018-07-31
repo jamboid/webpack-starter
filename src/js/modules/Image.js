@@ -24,7 +24,7 @@ const imageLoadingClass = "ob_Image--loading";
 const imageLoadedClass = "ob_Image--loaded";
 const imageDisplayedClass = "ob_Image--displayed";
 const imageFlexClass = "ob_Image--flex";
-const imageHiddenClass = "is_Hidden";
+const imageHiddenClass = "ob_Image--isHidden";
 
 ////////////////////////////////
 // Module Classes & Functions //
@@ -120,7 +120,6 @@ class SmartImage {
     }
   }
 
-
   /**
    * displayImageInContainer - Description
    *
@@ -181,7 +180,6 @@ class SmartImage {
     this.imageLoaded = true;
   }
 
-
   /**
    * getImageFile - Description
    *
@@ -202,9 +200,7 @@ class SmartImage {
           this.smartImageElem.classList.remove(imageLoadingClass);
           this.displayImageInContainer(this.imageToAdd);
         });
-
       } else if (this.imageType === 'background') {
-
         // The imagesLoaded function is called for image we want to load.
         // There is no initial callback because everything we want to do can wait
         // until the image is fully downloaded.

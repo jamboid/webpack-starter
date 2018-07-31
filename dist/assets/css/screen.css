@@ -5,16 +5,17 @@ body {
 
 /* != Image Object styles */
 .ob_Image {
-  line-height: 0; }
+  line-height: 0;
+  opacity: 0; }
   .ob_Image img {
     max-width: 100%;
     height: auto; }
   .ob_Image--loaded {
     opacity: 0;
     transition: opacity 1s ease; }
-  .ob_Image--displayed {
+  .ob_Image--displayed, .ob_Image--hasPlaceholder {
     opacity: 1; }
-  .ob_Image.is_Hidden {
+  .ob_Image--isHidden {
     display: none; }
 
 /* != Show/Hide Test component */

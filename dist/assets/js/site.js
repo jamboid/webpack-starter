@@ -77,7 +77,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = ".";
 /******/
 /******/
 /******/ 	// Load entry module and return exports
@@ -1402,7 +1402,7 @@ var imageLoadingClass = "ob_Image--loading";
 var imageLoadedClass = "ob_Image--loaded";
 var imageDisplayedClass = "ob_Image--displayed";
 var imageFlexClass = "ob_Image--flex";
-var imageHiddenClass = "is_Hidden";
+var imageHiddenClass = "ob_Image--isHidden";
 
 ////////////////////////////////
 // Module Classes & Functions //
@@ -1601,7 +1601,6 @@ var SmartImage = function () {
             _this3.displayImageInContainer(_this3.imageToAdd);
           });
         } else if (this.imageType === 'background') {
-
           // The imagesLoaded function is called for image we want to load.
           // There is no initial callback because everything we want to do can wait
           // until the image is fully downloaded.

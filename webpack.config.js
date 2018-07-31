@@ -1,14 +1,17 @@
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpackDashboard = require('webpack-dashboard/plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
   entry: { main: './src/js'},
   output: {
     filename: 'assets/js/site.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '.',
   },
-  devtool: 'source-map',
+  devtool: 'source-map', 
   module: {
     rules: [
       {
@@ -31,6 +34,13 @@ const config = {
     new webpackDashboard(),
     new MiniCssExtractPlugin({
       filename: "/assets/css/screen.css",
+    }),
+    new CopyWebpackPlugin([
+      {from:'src/img',to: 'assets/img'}
+    ]),
+    new HtmlWebpackPlugin({
+      template: 'src/html/index.html',
+      filename: 'index.html'
     })
   ],
   resolve: {
