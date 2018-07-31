@@ -1,7 +1,7 @@
 // Image Components module
 
 // Imports
-import PubSub from "pubsub-js";
+// import PubSub from "pubsub-js";
 import Events from "Modules/Events";
 import {isElementInView as inView} from "Modules/Utils";
 import imagesLoaded from "imagesloaded";
@@ -18,14 +18,14 @@ class SmartImage {
   constructor(element) {
     this.smartImageElem = element;
     this.placeholderImage = this.smartImageElem.querySelector(selPlaceholderImage);
-    this.loadingMethod = this.smartImageElem.getAttribute('data-image-load');
-    this.config = JSON.parse(this.smartImageElem.getAttribute('data-image-config'));
+    this.loadingMethod = this.smartImageElem.dataset.imageLoad;
+    this.config = JSON.parse(this.smartImageElem.dataset.imageConfig);
     this.imageType = this.config.type || false;
     this.imageReloader = this.config.reload || false;
-    this.imageTargetSel = this.smartImageElem.getAttribute('data-image-target') || null;
+    this.imageTargetSel = this.smartImageElem.dataset.imageTarget || null;
     this.imageLoaded = false;
     this.imageToAdd = document.createElement('img');
-    this.srcSet = JSON.parse(this.smartImageElem.getAttribute('data-src-set')) || {};
+    this.srcSet = JSON.parse(this.smartImageElem.dataset.srcSet) || {};
 
     if (this.loadingMethod === 'pageload') {
       this.getImageFile();
@@ -47,19 +47,18 @@ class SmartImage {
       if (this.srcSet.hasOwnProperty(key)) {
         // If the current key is not 'max' check that the page width is less than it,
         // and it is less than the current value for imageSrcKey
-        if(key !== 'max') {
+        if (key !== 'max') {
           // If imageSrcKey is not set to 'max' check if the key
           // is greater or equal than the page width and also if it
           // is less than the current value of imageSrcKey
-          if(imageSrcKey !== 'max') {
-            if(parseInt(key) >= pageWidth && parseInt(key) < imageSrcKey) {
+          if (imageSrcKey !== 'max') {
+            if (parseInt(key) >= pageWidth && parseInt(key) < imageSrcKey) {
               imageSrcKey = key;
+              // If imageSrcKey is still set to 'max' just check if the key
+              // is greater or equal than the page width
             }
-          }
-          // If imageSrcKey is still set to 'max' just check if the key
-          // is greater or equal than the page width
-          else {
-            if(parseInt(key) > pageWidth) {
+          } else {
+            if (parseInt(key) > pageWidth) {
               imageSrcKey = key;
             }
           }
@@ -70,7 +69,6 @@ class SmartImage {
     return imageSrcKey;
   }
 
-
   /**
    * Display a pre-loaded lazy image, adding atrributes set on
    * the sprite container
@@ -78,34 +76,33 @@ class SmartImage {
    * @parameter path (String)
    */
   displayImageInContainer() {
-    const imageAlt = this.smartImageElem.getAttribute('data-alt') || 'image';
-    const imageWidth = this.smartImageElem.getAttribute('data-width');
-    const imageClass = this.smartImageElem.getAttribute('data-class');
+    const imageAlt = this.smartImageElem.dataset.alt || 'image';
+    const imageWidth = this.smartImageElem.dataset.width;
+    const imageClass = this.smartImageElem.dataset.class;
 
     // Add 'loading' class to SmartImage container
     this.smartImageElem.classList.add('ob_Image--loading');
 
-
-    if(imageAlt.length > 0){
-      this.imageToAdd.setAttribute('alt', imageAlt);
+    if (imageAlt.length > 0) {
+      this.imageToAdd.alt = imageAlt;
     }
 
-    if(imageWidth) {
-      this.imageToAdd.setAttribute('width', imageWidth);
+    if (imageWidth) {
+      this.imageToAdd.width = imageWidth;
     }
 
-    if(imageClass) {
+    if (imageClass) {
       this.imageToAdd.addClass(imageClass);
     }
 
-    if(this.placeholderImage) {
-      this.placeholderImage.setAttribute('src', this.imageToAdd.getAttribute('src'))
-        .removeClass('placeholder')
-        .removeAttr('width')
-        .removeAttr('height');
+    if (this.placeholderImage) {
+      this.placeholderImage.src = this.imageToAdd.src;
+      this.placeholderImage.classList.remove('placeholder');
+      this.placeholderImage.removeAttribute('width');
+      this.placeholderImage.removeAttribute('height');
     } else {
 
-      if(this.imageTargetSel !== null){
+      if (this.imageTargetSel !== null) {
         //this.smartImageElem.parent().find(imageTargetSel).eq(0).append(this.imageToAdd);
       } else {
         this.smartImageElem.insertBefore(this.imageToAdd, null);
@@ -124,8 +121,6 @@ class SmartImage {
     this.imageLoaded = true;
   }
 
-
-
   /**
    * displayImageAsBackground - Description
    *
@@ -134,15 +129,15 @@ class SmartImage {
    */
   displayImageAsBackground(path) {
     const smartImage = 'url(' + path + ')';
-    const imageBackgroundPos = this.smartImageElem.getAttribute('data-position');
-    const imageBackgroundColor = this.smartImageElem.getAttribute('data-background-color');
+    const imageBackgroundPos = this.smartImageElem.dataset.position;
+    const imageBackgroundColor = this.smartImageElem.dataset.backgroundColor;
 
     this.smartImageElem.classList.add('ob_Image--loaded');
-    this.smartImageElem.style.backgroundImage(smartImage);
+    this.smartImageElem.style.backgroundImage = smartImage;
     this.smartImageElem.classList.add(imageBackgroundPos);
-    this.smartImageElem.style.backgroundColor(imageBackgroundColor);
+    this.smartImageElem.style.backgroundColor = imageBackgroundColor;
 
-    window.setTimeout(function () {
+    window.setTimeout(() => {
       this.smartImageElem.classList.add('ob_Image--displayed');
       PubSub.publish('content/update');
     }, 50);
@@ -158,58 +153,56 @@ class SmartImage {
   getImageFile() {
     const thisImageUrl = this.srcSet[this.calculateImageBreakpointToUse()];
 
-      //Site.utils.cl("image url: " + thisImageUrl);
+    //Site.utils.cl("image url: " + thisImageUrl);
 
-      if(thisImageUrl !== 'none'){
-        this.smartImageElem.classList.remove('is_Hidden');
-        this.imageToAdd.setAttribute('src',thisImageUrl);
+    if (thisImageUrl !== 'none') {
+      this.smartImageElem.classList.remove('is_Hidden');
+      this.imageToAdd.src = thisImageUrl;
 
-        const imageLoader = imagesLoaded(this.imageToAdd);
+      const imageLoader = imagesLoaded(this.imageToAdd);
 
-        if(this.imageType === 'inline') {
-          imageLoader.on('done',() => {
-            this.smartImageElem.classList.remove('ob_Image--loading');
-            this.displayImageInContainer(this.imageToAdd);
-            // We send a Global message indicating a change in page layout
-            PubSub.publish(Events.messages.imageLoaded);
-            PubSub.publish(Events.messages.layoutChange);
+      if (this.imageType === 'inline') {
+        imageLoader.on('done', () => {
+          this.smartImageElem.classList.remove('ob_Image--loading');
+          this.displayImageInContainer(this.imageToAdd);
+          // We send a Global message indicating a change in page layout
+          PubSub.publish(Events.messages.imageLoaded);
+          PubSub.publish(Events.messages.layoutChange);
 
-          });
+        });
 
-        } else if (this.imageType === 'background') {
+      } else if (this.imageType === 'background') {
 
-          // The imagesLoaded function is called for image we want to load.
-          // There is no initial callback because everything we want to do can wait
-          // until the image is fully downloaded.
-          imageLoader.on('done',() => {
-            // Add the class that gives the container its layout
-            this.smartImageElem.classList.add('ob_Image--flex');
-            // We call the function that adds the correct CSS to the the container
-            this.displayImageAsBackground(thisImageUrl);
-            // We send a Global message indicating a change in page layout
-            PubSub.publish(Events.messages.imageLoaded);
-            PubSub.publish(Events.messages.layoutChange);
-          });
-        }
-      } else {
-        this.smartImageElem.addClass('is_Hidden');
+        // The imagesLoaded function is called for image we want to load.
+        // There is no initial callback because everything we want to do can wait
+        // until the image is fully downloaded.
+        imageLoader.on('done', () => {
+          // Add the class that gives the container its layout
+          this.smartImageElem.classList.add('ob_Image--flex');
+          // We call the function that adds the correct CSS to the the container
+          this.displayImageAsBackground(thisImageUrl);
+          // We send a Global message indicating a change in page layout
+          PubSub.publish(Events.messages.imageLoaded);
+          PubSub.publish(Events.messages.layoutChange);
+        });
       }
+    } else {
+      this.smartImageElem.addClass('is_Hidden');
+    }
   }
-
-
 
   /**
    * Load and display a smart image - use this when being in view doesn't matter
    * @function
    */
   loadImage() {
-    if(this.imageType === 'inline') {
-      if(this.imageLoaded === false || this.imageReloader === true){
+    if (this.imageType === 'inline') {
+      if (this.imageLoaded === false || this.imageReloader === true) {
         this.getImageFile(this.smartImageElem);
       }
-    } else if(this.imageType === 'background') {
+    } else if (this.imageType === 'background') {
       this.smartImageElem.classList.add('ob_Image--flex');
-      if(this.imageLoaded === false || this.imageReloader === true){
+      if (this.imageLoaded === false || this.imageReloader === true) {
         this.getImageFile(this.smartImageElem);
       }
     }
@@ -220,17 +213,18 @@ class SmartImage {
    *
    */
   loadImageIfInView() {
-    if(this.imageType === 'inline') {
-      if(inView(this.smartImageElem) && (this.imageLoaded === false || this.imageReloader === true)){
+    console.log('here');
+
+    if (this.imageType === 'inline') {
+      if (inView(this.smartImageElem) && (this.imageLoaded === false || this.imageReloader === true)) {
         this.getImageFile(this.smartImageElem);
       }
-    } else if(this.imageType === 'background') {
-      if(inView(this.smartImageElem.parentNode) && (this.imageLoaded === false || this.imageReloader === true)){
+    } else if (this.imageType === 'background') {
+      if (inView(this.smartImageElem.parentNode) && (this.imageLoaded === false || this.imageReloader === true)) {
         this.getImageFile(this.smartImageElem);
       }
     }
   }
-
 
   /**
    * loadSmartImage - Description
@@ -240,11 +234,10 @@ class SmartImage {
   loadSmartImage(e) {
     e.preventDefault();
 
-    if(this.imageLoaded === false){
+    if (this.imageLoaded === false) {
       this.loadImageIfInView(this.smartImageElem);
     }
   }
-
 
   /**
    * reloadImage - Description
@@ -254,11 +247,10 @@ class SmartImage {
   reloadImage(e) {
     e.preventDefault();
 
-    if(this.imageLoaded === true && this.imageReloader === true){
+    if (this.imageLoaded === true && this.imageReloader === true) {
       this.getImageFile();
     }
   }
-
 
   /**
    * loadSmartImageOnClick - Description
@@ -268,11 +260,10 @@ class SmartImage {
   loadSmartImageOnClick(e) {
     e.preventDefault();
 
-    if(this.imageLoaded === false){
+    if (this.imageLoaded === false) {
       this.loadImage(this.smartImageElem);
     }
   }
-
 
   /**
    * bindCustomMessageEvents - Binds custom event listeners to the Smart Image DOM Element
@@ -284,20 +275,29 @@ class SmartImage {
     this.smartImageElem.addEventListener('siClickLoad', this.loadSmartImageOnClick().bind(this));
   }
 
-
   /**
    * subscribeToEvents - Subscribes the component to global messages and sets the component's responses via internal custom events
    *
    */
   subscribeToEvents() {
-    if(this.loadingMethod === 'view') {
-      PubSub.subscribe(Events.messages.scroll, () => { this.smartImageElem.dispatchEvent(Events.createCustomEvent('siLoad'));});
-      PubSub.subscribe(Events.messages.load, () => { this.smartImageElem.dispatchEvent(Events.createCustomEvent('siLoad'));});
-      PubSub.subscribe(Events.messages.layoutChange, () => { this.smartImageElem.dispatchEvent(Events.createCustomEvent('siLoad'));});
+    if (this.loadingMethod === 'view') {
+      PubSub.subscribe(Events.messages.scroll, () => {
+        this.smartImageElem.dispatchEvent(Events.createCustomEvent('siLoad'));
+      });
+      PubSub.subscribe(Events.messages.load, () => {
+        this.smartImageElem.dispatchEvent(Events.createCustomEvent('siLoad'));
+      });
+      PubSub.subscribe(Events.messages.layoutChange, () => {
+        this.smartImageElem.dispatchEvent(Events.createCustomEvent('siLoad'));
+      });
     }
 
-    PubSub.subscribe(Events.messages.resize, () => { this.smartImageElem.dispatchEvent(Events.createCustomEvent('siReload'));});
-    PubSub.subscribe(Events.messages.breakChange, () => { this.smartImageElem.dispatchEvent(Events.createCustomEvent('siReload'));});
+    PubSub.subscribe(Events.messages.resize, () => {
+      this.smartImageElem.dispatchEvent(Events.createCustomEvent('siReload'));
+    });
+    PubSub.subscribe(Events.messages.breakChange, () => {
+      this.smartImageElem.dispatchEvent(Events.createCustomEvent('siReload'));
+    });
   }
 }
 

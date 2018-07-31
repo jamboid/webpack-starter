@@ -1,6 +1,12 @@
 .cp_SmartImage {
   img {
+    width: 100%;
     max-width:800px;
     width: 100%;
+  }
+
+  &--background {
+    padding-top: 60%;
+    background-size:cover;
   }
 }
