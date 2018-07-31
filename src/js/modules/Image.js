@@ -34,7 +34,6 @@ class SmartImage {
     }
   }
 
-
   /**
    * calculateImageBreakpointToUse - Description
    *
@@ -88,11 +87,11 @@ class SmartImage {
 
 
     if(imageAlt.length > 0){
-      this.imageToAdd.getAttribute('alt', imageAlt);
+      this.imageToAdd.setAttribute('alt', imageAlt);
     }
 
     if(imageWidth) {
-      this.imageToAdd.getAttribute('width', imageWidth);
+      this.imageToAdd.setAttribute('width', imageWidth);
     }
 
     if(imageClass) {
@@ -100,7 +99,7 @@ class SmartImage {
     }
 
     if(this.placeholderImage) {
-      this.placeholderImage.getAttribute('src', this.imageToAdd.getAttribute('src'))
+      this.placeholderImage.setAttribute('src', this.imageToAdd.getAttribute('src'))
         .removeClass('placeholder')
         .removeAttr('width')
         .removeAttr('height');
@@ -221,8 +220,6 @@ class SmartImage {
    *
    */
   loadImageIfInView() {
-    console.log('here');
-
     if(this.imageType === 'inline') {
       if(inView(this.smartImageElem) && (this.imageLoaded === false || this.imageReloader === true)){
         this.getImageFile(this.smartImageElem);

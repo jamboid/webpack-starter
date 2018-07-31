@@ -21,10 +21,10 @@ class ShowHide {
    * @returns {type} Description
    */
   constructor(element) {
-    this.compDOMElement = element;
-    this.action = this.compDOMElement.querySelectorAll(selAction)[0];
-    this.content = this.compDOMElement.querySelectorAll(selContent)[0];
-    this.config = this.compDOMElement.getAttribute('data-showhide-config');
+    this.element = element;
+    this.action = this.element.querySelectorAll(selAction)[0];
+    this.content = this.element.querySelectorAll(selContent)[0];
+    this.config = this.element.getAttribute('data-showhide-config');
     this.animate = this.config.animate || false;
     this.speed = this.config.speed || 200;
     this.startState = this.config.open || false;
@@ -41,14 +41,14 @@ class ShowHide {
    */
   toggleControl(event) {
     event.preventDefault();
-    //this.compDOMElement.classList.toggle(displayClass);
+    //this.element.classList.toggle(displayClass);
 
-    if (this.compDOMElement.classList.contains(displayClass)) {
+    if (this.element.classList.contains(displayClass)) {
       Animation.collapseElement(this.content);
-      this.compDOMElement.classList.remove(displayClass);
+      this.element.classList.remove(displayClass);
     } else {
       Animation.expandElement(this.content);
-      this.compDOMElement.classList.add(displayClass);
+      this.element.classList.add(displayClass);
     }
 
     PubSub.publish(Events.messages.contentChange);
@@ -63,7 +63,7 @@ class ShowHide {
   setStartState() {
     if (this.startState === true) {
       Animation.expandElement(this.content);
-      this.compDOMElement.classList.add(displayClass);
+      this.element.classList.add(displayClass);
     }
   }
 
@@ -74,7 +74,7 @@ class ShowHide {
    * @returns {type} Description
    */
   bindCustomMessageEvents() {
-    this.compDOMElement.addEventListener('toggleShowHide', this.toggleControl.bind(this));
+    this.element.addEventListener('toggleShowHide', this.toggleControl.bind(this));
   }
 }
 

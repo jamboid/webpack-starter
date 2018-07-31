@@ -1475,11 +1475,11 @@ var SmartImage = function () {
       this.smartImageElem.classList.add('ob_Image--loading');
 
       if (imageAlt.length > 0) {
-        this.imageToAdd.getAttribute('alt', imageAlt);
+        this.imageToAdd.setAttribute('alt', imageAlt);
       }
 
       if (imageWidth) {
-        this.imageToAdd.getAttribute('width', imageWidth);
+        this.imageToAdd.setAttribute('width', imageWidth);
       }
 
       if (imageClass) {
@@ -1487,7 +1487,7 @@ var SmartImage = function () {
       }
 
       if (this.placeholderImage) {
-        this.placeholderImage.getAttribute('src', this.imageToAdd.getAttribute('src')).removeClass('placeholder').removeAttr('width').removeAttr('height');
+        this.placeholderImage.setAttribute('src', this.imageToAdd.getAttribute('src')).removeClass('placeholder').removeAttr('width').removeAttr('height');
       } else {
 
         if (this.imageTargetSel !== null) {
@@ -1613,8 +1613,6 @@ var SmartImage = function () {
   }, {
     key: "loadImageIfInView",
     value: function loadImageIfInView() {
-      console.log('here');
-
       if (this.imageType === 'inline') {
         if ((0, _Utils.isElementInView)(this.smartImageElem) && (this.imageLoaded === false || this.imageReloader === true)) {
           this.getImageFile(this.smartImageElem);
@@ -1874,10 +1872,10 @@ var ShowHide = function () {
   function ShowHide(element) {
     _classCallCheck(this, ShowHide);
 
-    this.compDOMElement = element;
-    this.action = this.compDOMElement.querySelectorAll(selAction)[0];
-    this.content = this.compDOMElement.querySelectorAll(selContent)[0];
-    this.config = this.compDOMElement.getAttribute('data-showhide-config');
+    this.element = element;
+    this.action = this.element.querySelectorAll(selAction)[0];
+    this.content = this.element.querySelectorAll(selContent)[0];
+    this.config = this.element.getAttribute('data-showhide-config');
     this.animate = this.config.animate || false;
     this.speed = this.config.speed || 200;
     this.startState = this.config.open || false;
@@ -1897,14 +1895,14 @@ var ShowHide = function () {
     key: "toggleControl",
     value: function toggleControl(event) {
       event.preventDefault();
-      //this.compDOMElement.classList.toggle(displayClass);
+      //this.element.classList.toggle(displayClass);
 
-      if (this.compDOMElement.classList.contains(displayClass)) {
+      if (this.element.classList.contains(displayClass)) {
         _Animation2.default.collapseElement(this.content);
-        this.compDOMElement.classList.remove(displayClass);
+        this.element.classList.remove(displayClass);
       } else {
         _Animation2.default.expandElement(this.content);
-        this.compDOMElement.classList.add(displayClass);
+        this.element.classList.add(displayClass);
       }
 
       _pubsubJs2.default.publish(_Events2.default.messages.contentChange);
@@ -1921,7 +1919,7 @@ var ShowHide = function () {
     value: function setStartState() {
       if (this.startState === true) {
         _Animation2.default.expandElement(this.content);
-        this.compDOMElement.classList.add(displayClass);
+        this.element.classList.add(displayClass);
       }
     }
 
@@ -1934,7 +1932,7 @@ var ShowHide = function () {
   }, {
     key: "bindCustomMessageEvents",
     value: function bindCustomMessageEvents() {
-      this.compDOMElement.addEventListener('toggleShowHide', this.toggleControl.bind(this));
+      this.element.addEventListener('toggleShowHide', this.toggleControl.bind(this));
     }
   }]);
 
