@@ -1,13 +1,25 @@
 // Show/Hide Components module
 
+////////////////////
+// Module Imports //
+////////////////////
+
 import PubSub from "pubsub-js";
 import Events from "Modules/Events";
 import Animation from "Modules/Animation";
+
+//////////////////////
+// Module Constants //
+//////////////////////
 
 const selComponent = "[data-showhide=component]";
 const selAction = "[data-showhide=component] [data-showhide=toggle]";
 const selContent = "[data-showhide=content]";
 const displayClass = 'is_Open';
+
+////////////////////////////////
+// Module Classes & Functions //
+////////////////////////////////
 
 /**
  * ShowHide - Class representing a Show/Hide DOM component
@@ -21,6 +33,7 @@ class ShowHide {
    * @returns {type} Description
    */
   constructor(element) {
+    // Set properties
     this.element = element;
     this.action = this.element.querySelectorAll(selAction)[0];
     this.content = this.element.querySelectorAll(selContent)[0];
@@ -29,10 +42,10 @@ class ShowHide {
     this.speed = this.config.speed || 200;
     this.startState = this.config.open || false;
 
+    // Call initial methods
     this.bindCustomMessageEvents();
     this.setStartState();
   }
-
 
   /**
    * toggleControl - Description
@@ -54,7 +67,6 @@ class ShowHide {
     PubSub.publish(Events.messages.contentChange);
   }
 
-
   /**
    * setStartState - Description
    *
@@ -67,7 +79,6 @@ class ShowHide {
     }
   }
 
-
   /**
    * bindCustomMessageEvents - Description
    *
@@ -77,7 +88,6 @@ class ShowHide {
     this.element.addEventListener('toggleShowHide', this.toggleControl.bind(this));
   }
 }
-
 
 /**
  * delegateEvents - Create delegated event listeners for the components within this module

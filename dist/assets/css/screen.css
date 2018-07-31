@@ -3,6 +3,20 @@ body {
   color: blue;
   border-radius: 10px; }
 
+/* != Image Object styles */
+.ob_Image {
+  line-height: 0; }
+  .ob_Image img {
+    max-width: 100%;
+    height: auto; }
+  .ob_Image--loaded {
+    opacity: 0;
+    transition: opacity 1s ease; }
+  .ob_Image--displayed {
+    opacity: 1; }
+  .ob_Image.is_Hidden {
+    display: none; }
+
 /* != Show/Hide Test component */
 .cp_ShowHide__toggle {
   display: inline-block;
@@ -24,13 +38,15 @@ body {
 .cp_ShowHide.is_Open .cp_ShowHide__content {
   height: auto; }
 
-.cp_SmartImage img {
-  width: 100%;
-  max-width: 800px; }
-
-.cp_SmartImage--background {
-  padding-top: 60%;
-  background-size: cover; }
+.cp_SmartImage {
+  min-height: 600px; }
+  .cp_SmartImage img {
+    width: 100%;
+    max-width: 800px;
+    width: 100%; }
+  .cp_SmartImage--background {
+    padding-top: 60%;
+    background-size: cover; }
 
 
 /*# sourceMappingURL=screen.css.map*/

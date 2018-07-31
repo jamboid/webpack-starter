@@ -1320,6 +1320,7 @@ function bindGlobalMessages() {
  * @param {string} eventToTrigger custom event we want to send back to target element
  */
 function createDelegatedEventListener(eventType, selector, eventToTrigger) {
+  console.log(selector);
   (0, _delegate2.default)(document.body, selector, eventType, function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -1340,7 +1341,8 @@ function initModule() {
 exports.default = {
   initModule: initModule,
   messages: messages,
-  delegate: createDelegatedEventListener
+  delegate: createDelegatedEventListener,
+  createCustomEvent: createCustomEvent
 };
 
 /***/ }),
@@ -1361,12 +1363,20 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Image Components module
 
-// Imports
-// import PubSub from "pubsub-js";
-
+////////////////////
+// Module Imports //
+////////////////////
 
 exports.initialiseSmartImages = initialiseSmartImages;
 exports.initModule = initModule;
+
+var _pubsubJs = __webpack_require__(/*! pubsub-js */ "./node_modules/pubsub-js/src/pubsub.js");
+
+var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
+
+var _imagesloaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
+
+var _imagesloaded2 = _interopRequireDefault(_imagesloaded);
 
 var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
 
@@ -1374,17 +1384,29 @@ var _Events2 = _interopRequireDefault(_Events);
 
 var _Utils = __webpack_require__(/*! Modules/Utils */ "./src/js/modules/Utils.js");
 
-var _imagesloaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
-
-var _imagesloaded2 = _interopRequireDefault(_imagesloaded);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+//////////////////////
+// Module Constants //
+//////////////////////
+
+// Selectors
 var selSmartImage = "[data-image-load]";
-var selClickToLoadSmartImage = "[data-image-load=click]";
+var selClickToLoadSmartImage = "[data-image-load=click] img.placeholder";
 var selPlaceholderImage = "img";
+
+// Classes
+var imageLoadingClass = "ob_Image--loading";
+var imageLoadedClass = "ob_Image--loaded";
+var imageDisplayedClass = "ob_Image--displayed";
+var imageFlexClass = "ob_Image--flex";
+var imageHiddenClass = "is_Hidden";
+
+////////////////////////////////
+// Module Classes & Functions //
+////////////////////////////////
 
 /**
  * SmartImage - Class representing a Smart Image component that loads optimised images based on screen size
@@ -1394,6 +1416,7 @@ var SmartImage = function () {
   function SmartImage(element) {
     _classCallCheck(this, SmartImage);
 
+    // Set properties
     this.smartImageElem = element;
     this.placeholderImage = this.smartImageElem.querySelector(selPlaceholderImage);
     this.loadingMethod = this.smartImageElem.dataset.imageLoad;
@@ -1404,6 +1427,10 @@ var SmartImage = function () {
     this.imageLoaded = false;
     this.imageToAdd = document.createElement('img');
     this.srcSet = JSON.parse(this.smartImageElem.dataset.srcSet) || {};
+
+    // Call initial methods
+    this.bindCustomMessageEvents();
+    this.subscribeToEvents();
 
     if (this.loadingMethod === 'pageload') {
       this.getImageFile();
@@ -1436,10 +1463,10 @@ var SmartImage = function () {
             if (imageSrcKey !== 'max') {
               if (parseInt(key) >= pageWidth && parseInt(key) < imageSrcKey) {
                 imageSrcKey = key;
-                // If imageSrcKey is still set to 'max' just check if the key
-                // is greater or equal than the page width
               }
             } else {
+              // If imageSrcKey is still set to 'max' just check if the key
+              // is greater or equal than the page width
               if (parseInt(key) > pageWidth) {
                 imageSrcKey = key;
               }
@@ -1452,10 +1479,35 @@ var SmartImage = function () {
     }
 
     /**
-     * Display a pre-loaded lazy image, adding atrributes set on
-     * the sprite container
-     * @function
-     * @parameter path (String)
+     * updateImageAttributes - Description
+     *
+     * @param {object} image Description
+     *
+     */
+
+  }, {
+    key: "updateImageAttributes",
+    value: function updateImageAttributes(image) {
+      var imageAlt = this.smartImageElem.dataset.alt || 'image';
+      var imageWidth = this.smartImageElem.dataset.width;
+      var imageClass = this.smartImageElem.dataset.class;
+
+      if (imageAlt.length > 0) {
+        image.alt = imageAlt;
+      }
+
+      if (imageWidth) {
+        image.width = imageWidth;
+      }
+
+      if (imageClass) {
+        image.classList.add(imageClass);
+      }
+    }
+
+    /**
+     * displayImageInContainer - Description
+     *
      */
 
   }, {
@@ -1463,46 +1515,32 @@ var SmartImage = function () {
     value: function displayImageInContainer() {
       var _this = this;
 
-      var imageAlt = this.smartImageElem.dataset.alt || 'image';
-      var imageWidth = this.smartImageElem.dataset.width;
-      var imageClass = this.smartImageElem.dataset.class;
-
       // Add 'loading' class to SmartImage container
-      this.smartImageElem.classList.add('ob_Image--loading');
-
-      if (imageAlt.length > 0) {
-        this.imageToAdd.alt = imageAlt;
-      }
-
-      if (imageWidth) {
-        this.imageToAdd.width = imageWidth;
-      }
-
-      if (imageClass) {
-        this.imageToAdd.addClass(imageClass);
-      }
+      this.smartImageElem.classList.add(imageLoadingClass);
 
       if (this.placeholderImage) {
         this.placeholderImage.src = this.imageToAdd.src;
         this.placeholderImage.classList.remove('placeholder');
         this.placeholderImage.removeAttribute('width');
         this.placeholderImage.removeAttribute('height');
+
+        this.updateImageAttributes(this.placeholderImage);
       } else {
+        this.updateImageAttributes(this.imageToAdd);
 
         if (this.imageTargetSel !== null) {
           //this.smartImageElem.parent().find(imageTargetSel).eq(0).append(this.imageToAdd);
         } else {
           this.smartImageElem.insertBefore(this.imageToAdd, null);
         }
-
         this.placeholderImage = this.imageToAdd;
       }
 
-      this.smartImageElem.classList.add('ob_Image--loaded');
+      this.smartImageElem.classList.add(imageLoadedClass);
       // Need to allow browser a moment to process the addition of the image before displaying it
       window.setTimeout(function () {
-        _this.smartImageElem.classList.add('ob_Image--displayed');
-        PubSub.publish('content/update');
+        _this.smartImageElem.classList.add(imageDisplayedClass);
+        _pubsubJs2.default.publish('content/update');
       }, 50);
 
       this.imageLoaded = true;
@@ -1511,7 +1549,7 @@ var SmartImage = function () {
     /**
      * displayImageAsBackground - Description
      *
-     * @param {type} path Description
+     * @param {string} path Description
      *
      */
 
@@ -1524,23 +1562,22 @@ var SmartImage = function () {
       var imageBackgroundPos = this.smartImageElem.dataset.position;
       var imageBackgroundColor = this.smartImageElem.dataset.backgroundColor;
 
-      this.smartImageElem.classList.add('ob_Image--loaded');
+      this.smartImageElem.classList.add(imageLoadedClass);
       this.smartImageElem.style.backgroundImage = smartImage;
       this.smartImageElem.classList.add(imageBackgroundPos);
       this.smartImageElem.style.backgroundColor = imageBackgroundColor;
 
       window.setTimeout(function () {
-        _this2.smartImageElem.classList.add('ob_Image--displayed');
-        PubSub.publish('content/update');
+        _this2.smartImageElem.classList.add(imageDisplayedClass);
+        _pubsubJs2.default.publish(_Events2.default.messages.contentChange);
       }, 50);
 
       this.imageLoaded = true;
     }
 
     /**
-     * Create and preload a new image based on a sprite src
-     * then call a function once the image is loaded into memory
-     * @function
+     * getImageFile - Description
+     *
      */
 
   }, {
@@ -1560,11 +1597,8 @@ var SmartImage = function () {
 
         if (this.imageType === 'inline') {
           imageLoader.on('done', function () {
-            _this3.smartImageElem.classList.remove('ob_Image--loading');
+            _this3.smartImageElem.classList.remove(imageLoadingClass);
             _this3.displayImageInContainer(_this3.imageToAdd);
-            // We send a Global message indicating a change in page layout
-            PubSub.publish(_Events2.default.messages.imageLoaded);
-            PubSub.publish(_Events2.default.messages.layoutChange);
           });
         } else if (this.imageType === 'background') {
 
@@ -1572,23 +1606,20 @@ var SmartImage = function () {
           // There is no initial callback because everything we want to do can wait
           // until the image is fully downloaded.
           imageLoader.on('done', function () {
-            // Add the class that gives the container its layout
-            _this3.smartImageElem.classList.add('ob_Image--flex');
-            // We call the function that adds the correct CSS to the the container
+            _this3.smartImageElem.classList.add(imageFlexClass);
             _this3.displayImageAsBackground(thisImageUrl);
-            // We send a Global message indicating a change in page layout
-            PubSub.publish(_Events2.default.messages.imageLoaded);
-            PubSub.publish(_Events2.default.messages.layoutChange);
           });
         }
       } else {
-        this.smartImageElem.addClass('is_Hidden');
+        this.smartImageElem.classList.add(imageHiddenClass);
       }
+
+      _pubsubJs2.default.publish(_Events2.default.messages.imageLoaded);
+      _pubsubJs2.default.publish(_Events2.default.messages.layoutChange);
     }
 
     /**
      * Load and display a smart image - use this when being in view doesn't matter
-     * @function
      */
 
   }, {
@@ -1599,7 +1630,7 @@ var SmartImage = function () {
           this.getImageFile(this.smartImageElem);
         }
       } else if (this.imageType === 'background') {
-        this.smartImageElem.classList.add('ob_Image--flex');
+        this.smartImageElem.classList.add(imageFlexClass);
         if (this.imageLoaded === false || this.imageReloader === true) {
           this.getImageFile(this.smartImageElem);
         }
@@ -1607,23 +1638,20 @@ var SmartImage = function () {
     }
 
     /**
-     * loadImageIfInView - Description
-     *
+     * loadImageIfInView - Check if
      */
 
   }, {
     key: "loadImageIfInView",
     value: function loadImageIfInView() {
-      console.log('here');
+      var component = this.smartImageElem;
 
-      if (this.imageType === 'inline') {
-        if ((0, _Utils.isElementInView)(this.smartImageElem) && (this.imageLoaded === false || this.imageReloader === true)) {
-          this.getImageFile(this.smartImageElem);
-        }
-      } else if (this.imageType === 'background') {
-        if ((0, _Utils.isElementInView)(this.smartImageElem.parentNode) && (this.imageLoaded === false || this.imageReloader === true)) {
-          this.getImageFile(this.smartImageElem);
-        }
+      if (this.imageType === 'background') {
+        component = component.parentNode;
+      }
+
+      if ((0, _Utils.isElementInView)(component) && (this.imageLoaded === false || this.imageReloader === true)) {
+        this.getImageFile(this.smartImageElem);
       }
     }
 
@@ -1683,9 +1711,9 @@ var SmartImage = function () {
   }, {
     key: "bindCustomMessageEvents",
     value: function bindCustomMessageEvents() {
-      this.smartImageElem.addEventListener('siLoad', this.loadSmartImage().bind(this));
-      this.smartImageElem.addEventListener('siReload', this.reloadImage().bind(this));
-      this.smartImageElem.addEventListener('siClickLoad', this.loadSmartImageOnClick().bind(this));
+      this.smartImageElem.addEventListener('siLoad', this.loadSmartImage.bind(this));
+      this.smartImageElem.addEventListener('siReload', this.reloadImage.bind(this));
+      this.smartImageElem.addEventListener('siClickLoad', this.loadSmartImageOnClick.bind(this));
     }
 
     /**
@@ -1699,21 +1727,21 @@ var SmartImage = function () {
       var _this4 = this;
 
       if (this.loadingMethod === 'view') {
-        PubSub.subscribe(_Events2.default.messages.scroll, function () {
+        _pubsubJs2.default.subscribe(_Events2.default.messages.scroll, function () {
           _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
         });
-        PubSub.subscribe(_Events2.default.messages.load, function () {
+        _pubsubJs2.default.subscribe(_Events2.default.messages.load, function () {
           _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
         });
-        PubSub.subscribe(_Events2.default.messages.layoutChange, function () {
+        _pubsubJs2.default.subscribe(_Events2.default.messages.layoutChange, function () {
           _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
         });
       }
 
-      PubSub.subscribe(_Events2.default.messages.resize, function () {
+      _pubsubJs2.default.subscribe(_Events2.default.messages.resize, function () {
         _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siReload'));
       });
-      PubSub.subscribe(_Events2.default.messages.breakChange, function () {
+      _pubsubJs2.default.subscribe(_Events2.default.messages.breakChange, function () {
         _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siReload'));
       });
     }
@@ -1837,6 +1865,10 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Show/Hide Components module
 
+////////////////////
+// Module Imports //
+////////////////////
+
 exports.initModule = initModule;
 
 var _pubsubJs = __webpack_require__(/*! pubsub-js */ "./node_modules/pubsub-js/src/pubsub.js");
@@ -1855,10 +1887,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+//////////////////////
+// Module Constants //
+//////////////////////
+
 var selComponent = "[data-showhide=component]";
 var selAction = "[data-showhide=component] [data-showhide=toggle]";
 var selContent = "[data-showhide=content]";
 var displayClass = 'is_Open';
+
+////////////////////////////////
+// Module Classes & Functions //
+////////////////////////////////
 
 /**
  * ShowHide - Class representing a Show/Hide DOM component
@@ -1875,14 +1915,16 @@ var ShowHide = function () {
   function ShowHide(element) {
     _classCallCheck(this, ShowHide);
 
-    this.compDOMElement = element;
-    this.action = this.compDOMElement.querySelectorAll(selAction)[0];
-    this.content = this.compDOMElement.querySelectorAll(selContent)[0];
-    this.config = this.compDOMElement.getAttribute('data-showhide-config');
+    // Set properties
+    this.element = element;
+    this.action = this.element.querySelectorAll(selAction)[0];
+    this.content = this.element.querySelectorAll(selContent)[0];
+    this.config = this.element.getAttribute('data-showhide-config');
     this.animate = this.config.animate || false;
     this.speed = this.config.speed || 200;
     this.startState = this.config.open || false;
 
+    // Call initial methods
     this.bindCustomMessageEvents();
     this.setStartState();
   }
@@ -1898,14 +1940,14 @@ var ShowHide = function () {
     key: "toggleControl",
     value: function toggleControl(event) {
       event.preventDefault();
-      //this.compDOMElement.classList.toggle(displayClass);
+      //this.element.classList.toggle(displayClass);
 
-      if (this.compDOMElement.classList.contains(displayClass)) {
+      if (this.element.classList.contains(displayClass)) {
         _Animation2.default.collapseElement(this.content);
-        this.compDOMElement.classList.remove(displayClass);
+        this.element.classList.remove(displayClass);
       } else {
         _Animation2.default.expandElement(this.content);
-        this.compDOMElement.classList.add(displayClass);
+        this.element.classList.add(displayClass);
       }
 
       _pubsubJs2.default.publish(_Events2.default.messages.contentChange);
@@ -1922,7 +1964,7 @@ var ShowHide = function () {
     value: function setStartState() {
       if (this.startState === true) {
         _Animation2.default.expandElement(this.content);
-        this.compDOMElement.classList.add(displayClass);
+        this.element.classList.add(displayClass);
       }
     }
 
@@ -1935,7 +1977,7 @@ var ShowHide = function () {
   }, {
     key: "bindCustomMessageEvents",
     value: function bindCustomMessageEvents() {
-      this.compDOMElement.addEventListener('toggleShowHide', this.toggleControl.bind(this));
+      this.element.addEventListener('toggleShowHide', this.toggleControl.bind(this));
     }
   }]);
 

@@ -14,7 +14,7 @@ export const messages = {
   "contentChange": "page-content/change",
   "layoutChange": "layout/change",
   "breakChange" : "breakpoint/change"
-} 
+}
 
 /**
  * createCustomEvent - Returns a custom event object
@@ -64,7 +64,8 @@ function bindGlobalMessages() {
  * @param {string} eventToTrigger custom event we want to send back to target element
  */
 export function createDelegatedEventListener(eventType, selector, eventToTrigger) {
-  delegate(document.body, selector, eventType, function(e) {
+  console.log(selector);
+  delegate(document.body, selector, eventType, (e) => {
     e.preventDefault();
     e.stopPropagation();
     let customEvent = createCustomEvent(eventToTrigger, null);
@@ -84,5 +85,6 @@ export function initModule() {
 export default {
   initModule: initModule,
   messages:messages,
-  delegate:createDelegatedEventListener
+  delegate:createDelegatedEventListener,
+  createCustomEvent:createCustomEvent,
 }
