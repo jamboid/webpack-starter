@@ -1161,20 +1161,20 @@ function initialiseComponentModules() {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.collapseElement = collapseElement;
-exports.expandElement = expandElement;
 /** Animation module - functions to aid animating page elements */
+
 
 /**
  * expandElement - Collapses an element by setting its height to 0.
  *
  * @param {DOMElement} element - A single DOM element
  */
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.collapseElement = collapseElement;
+exports.expandElement = expandElement;
 function collapseElement(element) {
   // get the height of the element's inner content, regardless of its actual size
   var sectionHeight = element.scrollHeight;
@@ -1238,6 +1238,8 @@ exports.default = {
 "use strict";
 
 
+//import * as utils from "./utils.js";
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -1279,8 +1281,7 @@ var messages = exports.messages = {
    *
    * @returns {object} Custom Event object
    */
-}; //import * as utils from "./utils.js";
-function createCustomEvent(eventName, eventData) {
+};function createCustomEvent(eventName, eventData) {
   var customEvent = void 0;
 
   if (window.CustomEvent) {
@@ -1355,17 +1356,18 @@ exports.default = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+// Image Components module
 
+
+////////////////////
+// Module Imports //
+////////////////////
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Image Components module
-
-////////////////////
-// Module Imports //
-////////////////////
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 exports.initialiseSmartImages = initialiseSmartImages;
 exports.initModule = initModule;
@@ -1792,6 +1794,7 @@ exports.default = { initModule: initModule };
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+// Modal Components Module
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -1801,10 +1804,8 @@ exports.initModule = initModule;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// Modal Components Module
-
 var selAction = '[data-modal="link"]';
-var templateModal = '\n  <div class="cp_Modal" data-modal="component">\n    <div class="cp_Modal__screen"></div>\n    <div class="cp_Modal__content"></div>\n  </div>\n';
+var templateModal = "\n  <div class=\"cp_Modal\" data-modal=\"component\">\n    <div class=\"cp_Modal__screen\"></div>\n    <div class=\"cp_Modal__content\"></div>\n  </div>\n";
 
 /**
  * Modal - Class that reper
@@ -1856,17 +1857,18 @@ exports.default = { initModule: initModule };
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+// Show/Hide Components module
 
+
+////////////////////
+// Module Imports //
+////////////////////
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Show/Hide Components module
-
-////////////////////
-// Module Imports //
-////////////////////
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 exports.initModule = initModule;
 
@@ -2022,7 +2024,17 @@ exports.default = { initModule: initModule };
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+// Utilities Module
 
+
+/**
+ * Returns the nearest parent element matching the selector, with the option to return the starting element if it matches.
+ * source: https://blog.wearecolony.com/a-year-without-jquery/
+ * @param   {Element}       el
+ * @param   {string}        selector
+ * @param   {boolean}       [includeSelf]
+ * @return  {Element|null}
+ */
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -2036,16 +2048,6 @@ exports.decodeCharacters = decodeCharacters;
 exports.resetStyles = resetStyles;
 exports.getOffset = getOffset;
 exports.ready = ready;
-// Utilities Module
-
-/**
- * Returns the nearest parent element matching the selector, with the option to return the starting element if it matches.
- * source: https://blog.wearecolony.com/a-year-without-jquery/
- * @param   {Element}       el
- * @param   {string}        selector
- * @param   {boolean}       [includeSelf]
- * @return  {Element|null}
- */
 function closestParent(el, selector, includeSelf) {
   var parent = el.parentNode;
 

@@ -1,4 +1,5 @@
 // Utilities Module
+"use strict";
 
 /**
  * Returns the nearest parent element matching the selector, with the option to return the starting element if it matches.

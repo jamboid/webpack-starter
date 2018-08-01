@@ -1,4 +1,5 @@
 // Show/Hide Components module
+"use strict";
 
 ////////////////////
 // Module Imports //

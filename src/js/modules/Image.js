@@ -1,4 +1,6 @@
 // Image Components module
+"use strict";
+
 
 ////////////////////
 // Module Imports //

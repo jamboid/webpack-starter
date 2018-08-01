@@ -1,4 +1,5 @@
 // Modal Components Module
+"use strict";
 
 const selAction = '[data-modal="link"]';
 const templateModal = `

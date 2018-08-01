@@ -1,3 +1,6 @@
+"use strict";
+
+
 //import * as utils from "./utils.js";
 import debounce from "debounce";
 import delegate from "delegate";

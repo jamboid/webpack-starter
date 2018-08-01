@@ -1,3 +1,5 @@
+"use strict";
+
 import "Sass/screen.scss";
 import {ready} from "Modules/Utils";
 import {initModule as initShowhide} from "Modules/Showhide";

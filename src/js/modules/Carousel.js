@@ -1,4 +1,6 @@
 // Base Carousel module
+"use strict";
+
 
 import PubSub from "pubsub-js";
 import Events from "Modules/Events";

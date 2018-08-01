@@ -1,4 +1,5 @@
 /** Animation module - functions to aid animating page elements */
+"use strict";
 
 /**
  * expandElement - Collapses an element by setting its height to 0.
