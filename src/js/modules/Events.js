@@ -1,10 +1,17 @@
+////////////////////
+// Module Imports //
+////////////////////
 "use strict";
 
 
-//import * as utils from "./utils.js";
 import debounce from "debounce";
 import delegate from "delegate";
 import PubSub from "pubsub-js";
+
+
+//////////////////////
+// Module Constants //
+//////////////////////
 
 /**
  * Object containing global message strings
@@ -18,6 +25,10 @@ export const messages = {
   "layoutChange": "layout/change",
   "breakChange" : "breakpoint/change"
 }
+
+/////////////////////////
+// Classes & Functions //
+/////////////////////////
 
 /**
  * createCustomEvent - Returns a custom event object
