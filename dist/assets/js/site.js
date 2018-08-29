@@ -1164,6 +1164,10 @@ function initialiseComponentModules() {
 /** Animation module - functions to aid animating page elements */
 
 
+//////////////////////
+// Module Functions //
+//////////////////////
+
 /**
  * expandElement - Collapses an element by setting its height to 0.
  *
@@ -1236,9 +1240,10 @@ exports.default = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+////////////////////
+// Module Imports //
+////////////////////
 
-
-//import * as utils from "./utils.js";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -1261,6 +1266,10 @@ var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//////////////////////
+// Module Constants //
+//////////////////////
+
 /**
  * Object containing global message strings
  * @constant
@@ -1272,6 +1281,10 @@ var messages = exports.messages = {
   "contentChange": "page-content/change",
   "layoutChange": "layout/change",
   "breakChange": "breakpoint/change"
+
+  /////////////////////////
+  // Classes & Functions //
+  /////////////////////////
 
   /**
    * createCustomEvent - Returns a custom event object
@@ -1427,16 +1440,16 @@ var SmartImage = function () {
     this.imageReloader = this.config.reload || false;
     this.imageTargetSel = this.smartImageElem.dataset.imageTarget || null;
     this.imageLoaded = false;
-    this.imageToAdd = document.createElement('img');
+    this.imageToAdd = document.createElement("img");
     this.srcSet = JSON.parse(this.smartImageElem.dataset.srcSet) || {};
 
     // Call initial methods
     this.bindCustomMessageEvents();
     this.subscribeToEvents();
 
-    if (this.loadingMethod === 'pageload') {
+    if (this.loadingMethod === "pageload") {
       this.getImageFile();
-    } else if (this.loadingMethod === 'view') {
+    } else if (this.loadingMethod === "view") {
       this.loadImageIfInView();
     }
   }
@@ -1458,11 +1471,11 @@ var SmartImage = function () {
         if (this.srcSet.hasOwnProperty(key)) {
           // If the current key is not 'max' check that the page width is less than it,
           // and it is less than the current value for imageSrcKey
-          if (key !== 'max') {
+          if (key !== "max") {
             // If imageSrcKey is not set to 'max' check if the key
             // is greater or equal than the page width and also if it
             // is less than the current value of imageSrcKey
-            if (imageSrcKey !== 'max') {
+            if (imageSrcKey !== "max") {
               if (parseInt(key) >= pageWidth && parseInt(key) < imageSrcKey) {
                 imageSrcKey = key;
               }
@@ -1483,14 +1496,14 @@ var SmartImage = function () {
     /**
      * updateImageAttributes - Description
      *
-     * @param {object} image Description
+     * @param {Element} image <img> html element
      *
      */
 
   }, {
     key: "updateImageAttributes",
     value: function updateImageAttributes(image) {
-      var imageAlt = this.smartImageElem.dataset.alt || 'image';
+      var imageAlt = this.smartImageElem.dataset.alt || "image";
       var imageWidth = this.smartImageElem.dataset.width;
       var imageClass = this.smartImageElem.dataset.class;
 
@@ -1522,9 +1535,9 @@ var SmartImage = function () {
 
       if (this.placeholderImage) {
         this.placeholderImage.src = this.imageToAdd.src;
-        this.placeholderImage.classList.remove('placeholder');
-        this.placeholderImage.removeAttribute('width');
-        this.placeholderImage.removeAttribute('height');
+        this.placeholderImage.classList.remove("placeholder");
+        this.placeholderImage.removeAttribute("width");
+        this.placeholderImage.removeAttribute("height");
 
         this.updateImageAttributes(this.placeholderImage);
       } else {
@@ -1542,7 +1555,7 @@ var SmartImage = function () {
       // Need to allow browser a moment to process the addition of the image before displaying it
       window.setTimeout(function () {
         _this.smartImageElem.classList.add(imageDisplayedClass);
-        _pubsubJs2.default.publish('content/update');
+        _pubsubJs2.default.publish("content/update");
       }, 50);
 
       this.imageLoaded = true;
@@ -1560,7 +1573,7 @@ var SmartImage = function () {
     value: function displayImageAsBackground(path) {
       var _this2 = this;
 
-      var smartImage = 'url(' + path + ')';
+      var smartImage = "url(" + path + ")";
       var imageBackgroundPos = this.smartImageElem.dataset.position;
       var imageBackgroundColor = this.smartImageElem.dataset.backgroundColor;
 
@@ -1591,22 +1604,22 @@ var SmartImage = function () {
 
       //Site.utils.cl("image url: " + thisImageUrl);
 
-      if (thisImageUrl !== 'none') {
-        this.smartImageElem.classList.remove('is_Hidden');
+      if (thisImageUrl !== "none") {
+        this.smartImageElem.classList.remove("is_Hidden");
         this.imageToAdd.src = thisImageUrl;
 
         var imageLoader = (0, _imagesloaded2.default)(this.imageToAdd);
 
-        if (this.imageType === 'inline') {
-          imageLoader.on('done', function () {
+        if (this.imageType === "inline") {
+          imageLoader.on("done", function () {
             _this3.smartImageElem.classList.remove(imageLoadingClass);
             _this3.displayImageInContainer(_this3.imageToAdd);
           });
-        } else if (this.imageType === 'background') {
+        } else if (this.imageType === "background") {
           // The imagesLoaded function is called for image we want to load.
           // There is no initial callback because everything we want to do can wait
           // until the image is fully downloaded.
-          imageLoader.on('done', function () {
+          imageLoader.on("done", function () {
             _this3.smartImageElem.classList.add(imageFlexClass);
             _this3.displayImageAsBackground(thisImageUrl);
           });
@@ -1626,11 +1639,11 @@ var SmartImage = function () {
   }, {
     key: "loadImage",
     value: function loadImage() {
-      if (this.imageType === 'inline') {
+      if (this.imageType === "inline") {
         if (this.imageLoaded === false || this.imageReloader === true) {
           this.getImageFile(this.smartImageElem);
         }
-      } else if (this.imageType === 'background') {
+      } else if (this.imageType === "background") {
         this.smartImageElem.classList.add(imageFlexClass);
         if (this.imageLoaded === false || this.imageReloader === true) {
           this.getImageFile(this.smartImageElem);
@@ -1647,7 +1660,7 @@ var SmartImage = function () {
     value: function loadImageIfInView() {
       var component = this.smartImageElem;
 
-      if (this.imageType === 'background') {
+      if (this.imageType === "background") {
         component = component.parentNode;
       }
 
@@ -1712,9 +1725,9 @@ var SmartImage = function () {
   }, {
     key: "bindCustomMessageEvents",
     value: function bindCustomMessageEvents() {
-      this.smartImageElem.addEventListener('siLoad', this.loadSmartImage.bind(this));
-      this.smartImageElem.addEventListener('siReload', this.reloadImage.bind(this));
-      this.smartImageElem.addEventListener('siClickLoad', this.loadSmartImageOnClick.bind(this));
+      this.smartImageElem.addEventListener("siLoad", this.loadSmartImage.bind(this));
+      this.smartImageElem.addEventListener("siReload", this.reloadImage.bind(this));
+      this.smartImageElem.addEventListener("siClickLoad", this.loadSmartImageOnClick.bind(this));
     }
 
     /**
@@ -1727,23 +1740,23 @@ var SmartImage = function () {
     value: function subscribeToEvents() {
       var _this4 = this;
 
-      if (this.loadingMethod === 'view') {
+      if (this.loadingMethod === "view") {
         _pubsubJs2.default.subscribe(_Events2.default.messages.scroll, function () {
-          _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
+          _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent("siLoad"));
         });
         _pubsubJs2.default.subscribe(_Events2.default.messages.load, function () {
-          _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
+          _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent("siLoad"));
         });
         _pubsubJs2.default.subscribe(_Events2.default.messages.layoutChange, function () {
-          _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siLoad'));
+          _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent("siLoad"));
         });
       }
 
       _pubsubJs2.default.subscribe(_Events2.default.messages.resize, function () {
-        _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siReload'));
+        _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent("siReload"));
       });
       _pubsubJs2.default.subscribe(_Events2.default.messages.breakChange, function () {
-        _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent('siReload'));
+        _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent("siReload"));
       });
     }
   }]);
@@ -1759,7 +1772,7 @@ var SmartImage = function () {
 
 
 function delegateEvents() {
-  _Events2.default.delegate('click', selClickToLoadSmartImage, 'siClickLoad');
+  _Events2.default.delegate("click", selClickToLoadSmartImage, "siClickLoad");
 }
 
 function initialiseSmartImages() {
@@ -1802,6 +1815,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.initModule = initModule;
 
+var _pubsubJs = __webpack_require__(/*! pubsub-js */ "./node_modules/pubsub-js/src/pubsub.js");
+
+var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
+
+var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
+
+var _Events2 = _interopRequireDefault(_Events);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var selAction = '[data-modal="link"]';
@@ -1831,9 +1854,9 @@ var ModalLinkManager = function ModalLinkManager() {
  */
 
 
-function delegateEvents() {}
-//Events.createDelegatedEventListener('click', selAction, 'toggleShowHide');
-
+function delegateEvents() {
+  _Events2.default.delegate('click', selAction, 'toggleShowHide');
+}
 
 /**
  * initModule - Initialise this module and the components contained in it
@@ -1895,7 +1918,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var selComponent = "[data-showhide=component]";
 var selAction = "[data-showhide=component] [data-showhide=toggle]";
 var selContent = "[data-showhide=content]";
-var displayClass = 'is_Open';
+var displayClass = "is_Open";
 
 ////////////////////////////////
 // Module Classes & Functions //
@@ -1920,7 +1943,7 @@ var ShowHide = function () {
     this.element = element;
     this.action = this.element.querySelectorAll(selAction)[0];
     this.content = this.element.querySelectorAll(selContent)[0];
-    this.config = this.element.getAttribute('data-showhide-config');
+    this.config = this.element.getAttribute("data-showhide-config");
     this.animate = this.config.animate || false;
     this.speed = this.config.speed || 200;
     this.startState = this.config.open || false;
@@ -1978,7 +2001,7 @@ var ShowHide = function () {
   }, {
     key: "bindCustomMessageEvents",
     value: function bindCustomMessageEvents() {
-      this.element.addEventListener('toggleShowHide', this.toggleControl.bind(this));
+      this.element.addEventListener("toggleShowHide", this.toggleControl.bind(this));
     }
   }]);
 
@@ -1993,7 +2016,7 @@ var ShowHide = function () {
 
 
 function delegateEvents() {
-  _Events2.default.delegate('click', selAction, 'toggleShowHide');
+  _Events2.default.delegate("click", selAction, "toggleShowHide");
 }
 
 /**

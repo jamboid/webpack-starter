@@ -16,7 +16,7 @@ import Animation from "Modules/Animation";
 const selComponent = "[data-showhide=component]";
 const selAction = "[data-showhide=component] [data-showhide=toggle]";
 const selContent = "[data-showhide=content]";
-const displayClass = 'is_Open';
+const displayClass = "is_Open";
 
 ////////////////////////////////
 // Module Classes & Functions //
@@ -38,7 +38,7 @@ class ShowHide {
     this.element = element;
     this.action = this.element.querySelectorAll(selAction)[0];
     this.content = this.element.querySelectorAll(selContent)[0];
-    this.config = this.element.getAttribute('data-showhide-config');
+    this.config = this.element.getAttribute("data-showhide-config");
     this.animate = this.config.animate || false;
     this.speed = this.config.speed || 200;
     this.startState = this.config.open || false;
@@ -86,7 +86,10 @@ class ShowHide {
    * @returns {type} Description
    */
   bindCustomMessageEvents() {
-    this.element.addEventListener('toggleShowHide', this.toggleControl.bind(this));
+    this.element.addEventListener(
+      "toggleShowHide",
+      this.toggleControl.bind(this)
+    );
   }
 }
 
@@ -96,7 +99,7 @@ class ShowHide {
  * @returns {type} Description
  */
 function delegateEvents() {
-  Events.delegate('click', selAction, 'toggleShowHide');
+  Events.delegate("click", selAction, "toggleShowHide");
 }
 
 /**
@@ -110,9 +113,9 @@ export function initModule() {
 
   // Find and initialise Show/Hide components using the ShowHide class
   const showHideComponents = document.querySelectorAll(selComponent);
-  Array.prototype.forEach.call(showHideComponents, (element) => {
+  Array.prototype.forEach.call(showHideComponents, element => {
     const newShowHide = new ShowHide(element);
   });
 }
 
-export default {initModule: initModule}
+export default { initModule: initModule };
