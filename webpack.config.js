@@ -3,6 +3,26 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpackDashboard = require('webpack-dashboard/plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const fs = require('fs');
+
+// Our function that generates our html plugins
+function generateHtmlPlugins (templateDir) {
+  // Read files in template directory
+  const templateFiles = fs.readdirSync(path.resolve(__dirname, templateDir))
+  return templateFiles.map(item => {
+    // Split names and extension
+    const parts = item.split('.')
+    const name = parts[0]
+    const extension = parts[1]
+    // Create new HTMLWebpackPlugin with options
+    return new HtmlWebpackPlugin({
+      filename: `${name}.html`,
+      template: path.resolve(__dirname, `${templateDir}/${name}.${extension}`)
+    })
+  })
+}
+
+const htmlPlugins = generateHtmlPlugins('./src/html/pages')
 
 const config = {
   entry: { main: './src/js'},
@@ -11,7 +31,7 @@ const config = {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '.',
   },
-  devtool: 'source-map', 
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -28,7 +48,23 @@ const config = {
           'sass-loader'
         ]
       }
+      // ,
+      // {
+      //   test: /\.(html)$/,
+      //   use: {
+      //     loader: 'html-loader',
+      //     options: {
+      //       interpolate: true
+      //     }
+      //   }
+      // }
     ]
+  },
+  resolve: {
+    alias: {
+      Modules: path.resolve(__dirname, 'src/js/modules/'),
+      Sass: path.resolve(__dirname, 'src/scss/')
+    }
   },
   plugins: [
     new webpackDashboard(),
@@ -37,18 +73,8 @@ const config = {
     }),
     new CopyWebpackPlugin([
       {from:'src/img',to: 'assets/img'}
-    ]),
-    new HtmlWebpackPlugin({
-      template: 'src/html/index.html',
-      filename: 'index.html'
-    })
-  ],
-  resolve: {
-    alias: {
-      Modules: path.resolve(__dirname, 'src/js/modules/'),
-      Sass: path.resolve(__dirname, 'src/scss/')
-    }
-  }
+    ])
+  ].concat(htmlPlugins)
 };
 
 module.exports = config;
