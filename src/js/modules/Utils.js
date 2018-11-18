@@ -84,7 +84,6 @@ export function outerHeight(el) {
  * Read a page's GET URL query string variables and return them as an associative array.
  * @return  {Array}
  */
-
 export function getURLQueryString() {
   var vars = [],
     hash;

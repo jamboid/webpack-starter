@@ -1164,6 +1164,10 @@ function initialiseComponentModules() {
 /** Animation module - functions to aid animating page elements */
 
 
+//////////////////////
+// Module Functions //
+//////////////////////
+
 /**
  * expandElement - Collapses an element by setting its height to 0.
  *
@@ -1178,6 +1182,7 @@ exports.expandElement = expandElement;
 function collapseElement(element) {
   // get the height of the element's inner content, regardless of its actual size
   var sectionHeight = element.scrollHeight;
+  element.style.height = sectionHeight + "px";
 
   // temporarily disable all css transitions
   var elementTransition = element.style.transition;
@@ -1204,8 +1209,6 @@ function collapseElement(element) {
  * @param {DOMElement} element - A single DOM element
  */
 function expandElement(element) {
-  var _arguments = arguments;
-
   // get the height of the element's inner content, regardless of its actual size
   var sectionHeight = element.scrollHeight;
 
@@ -1213,9 +1216,9 @@ function expandElement(element) {
   element.style.height = sectionHeight + 'px';
 
   // when the next css transition finishes (which should be the one we just triggered)
-  element.addEventListener('transitionend', function () {
+  element.addEventListener('transitionend', function expansionEnds() {
     // remove this event listener so it only gets triggered once
-    element.removeEventListener('transitionend', _arguments.callee);
+    element.removeEventListener("transitionend", expansionEnds);
     // remove "height" from the element's inline styles, so it can return to its initial value
     element.style.height = null;
   });
@@ -1236,9 +1239,10 @@ exports.default = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+////////////////////
+// Module Imports //
+////////////////////
 
-
-//import * as utils from "./utils.js";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -1261,6 +1265,10 @@ var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//////////////////////
+// Module Constants //
+//////////////////////
+
 /**
  * Object containing global message strings
  * @constant
@@ -1272,6 +1280,10 @@ var messages = exports.messages = {
   "contentChange": "page-content/change",
   "layoutChange": "layout/change",
   "breakChange": "breakpoint/change"
+
+  /////////////////////////
+  // Classes & Functions //
+  /////////////////////////
 
   /**
    * createCustomEvent - Returns a custom event object
@@ -1321,7 +1333,7 @@ function bindGlobalMessages() {
  * @param {string} eventToTrigger custom event we want to send back to target element
  */
 function createDelegatedEventListener(eventType, selector, eventToTrigger) {
-  console.log(selector);
+  window.console.log(selector);
   (0, _delegate2.default)(document.body, selector, eventType, function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -1483,7 +1495,7 @@ var SmartImage = function () {
     /**
      * updateImageAttributes - Description
      *
-     * @param {object} image Description
+     * @param {Element} image <img> html element
      *
      */
 
@@ -1802,6 +1814,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.initModule = initModule;
 
+var _pubsubJs = __webpack_require__(/*! pubsub-js */ "./node_modules/pubsub-js/src/pubsub.js");
+
+var _pubsubJs2 = _interopRequireDefault(_pubsubJs);
+
+var _Events = __webpack_require__(/*! Modules/Events */ "./src/js/modules/Events.js");
+
+var _Events2 = _interopRequireDefault(_Events);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var selAction = '[data-modal="link"]';
@@ -1831,9 +1853,9 @@ var ModalLinkManager = function ModalLinkManager() {
  */
 
 
-function delegateEvents() {}
-//Events.createDelegatedEventListener('click', selAction, 'toggleShowHide');
-
+function delegateEvents() {
+  _Events2.default.delegate('click', selAction, 'toggleShowHide');
+}
 
 /**
  * initModule - Initialise this module and the components contained in it
@@ -2122,7 +2144,6 @@ function outerHeight(el) {
  * Read a page's GET URL query string variables and return them as an associative array.
  * @return  {Array}
  */
-
 function getURLQueryString() {
   var vars = [],
       hash;
