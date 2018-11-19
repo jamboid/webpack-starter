@@ -113,6 +113,7 @@ export function initModule() {
 
   // Find and initialise Show/Hide components using the ShowHide class
   const showHideComponents = document.querySelectorAll(selComponent);
+  
   Array.prototype.forEach.call(showHideComponents, element => {
     const newShowHide = new ShowHide(element);
   });
