@@ -1182,6 +1182,7 @@ exports.expandElement = expandElement;
 function collapseElement(element) {
   // get the height of the element's inner content, regardless of its actual size
   var sectionHeight = element.scrollHeight;
+  element.style.height = sectionHeight + "px";
 
   // temporarily disable all css transitions
   var elementTransition = element.style.transition;
@@ -1208,8 +1209,6 @@ function collapseElement(element) {
  * @param {DOMElement} element - A single DOM element
  */
 function expandElement(element) {
-  var _arguments = arguments;
-
   // get the height of the element's inner content, regardless of its actual size
   var sectionHeight = element.scrollHeight;
 
@@ -1217,9 +1216,9 @@ function expandElement(element) {
   element.style.height = sectionHeight + 'px';
 
   // when the next css transition finishes (which should be the one we just triggered)
-  element.addEventListener('transitionend', function () {
+  element.addEventListener('transitionend', function expansionEnds() {
     // remove this event listener so it only gets triggered once
-    element.removeEventListener('transitionend', _arguments.callee);
+    element.removeEventListener("transitionend", expansionEnds);
     // remove "height" from the element's inline styles, so it can return to its initial value
     element.style.height = null;
   });
@@ -1334,7 +1333,7 @@ function bindGlobalMessages() {
  * @param {string} eventToTrigger custom event we want to send back to target element
  */
 function createDelegatedEventListener(eventType, selector, eventToTrigger) {
-  console.log(selector);
+  window.console.log(selector);
   (0, _delegate2.default)(document.body, selector, eventType, function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -2145,7 +2144,6 @@ function outerHeight(el) {
  * Read a page's GET URL query string variables and return them as an associative array.
  * @return  {Array}
  */
-
 function getURLQueryString() {
   var vars = [],
       hash;
