@@ -78,7 +78,6 @@ function bindGlobalMessages() {
  * @param {string} eventToTrigger custom event we want to send back to target element
  */
 export function createDelegatedEventListener(eventType, selector, eventToTrigger) {
-  window.console.log(selector);
   delegate(document.body, selector, eventType, (e) => {
     e.preventDefault();
     e.stopPropagation();

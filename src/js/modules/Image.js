@@ -27,6 +27,15 @@ const imageDisplayedClass = "ob_Image--displayed";
 const imageFlexClass = "ob_Image--flex";
 const imageHiddenClass = "ob_Image--isHidden";
 
+// Image Observer
+const observerOptions  = {
+  root: null,
+  rootMargin: "0px",
+  threshold: 0
+};
+
+let imageObserver;
+
 ////////////////////////////////
 // Module Classes & Functions //
 ////////////////////////////////
@@ -49,6 +58,11 @@ class SmartImage {
     this.imageLoaded = false;
     this.imageToAdd = document.createElement("img");
     this.srcSet = JSON.parse(this.smartImageElem.dataset.srcSet) || {};
+
+    // Add Image Element to observer
+    if(this.loadingMethod === 'view') {
+      imageObserver.observe(this.smartImageElem);
+    }
 
     // Call initial methods
     this.bindCustomMessageEvents();
@@ -299,10 +313,12 @@ class SmartImage {
       "siLoad",
       this.loadSmartImage.bind(this)
     );
+    
     this.smartImageElem.addEventListener(
       "siReload",
       this.reloadImage.bind(this)
     );
+
     this.smartImageElem.addEventListener(
       "siClickLoad",
       this.loadSmartImageOnClick.bind(this)
@@ -315,12 +331,18 @@ class SmartImage {
    */
   subscribeToEvents() {
     if (this.loadingMethod === "view") {
-      PubSub.subscribe(Events.messages.scroll, () => {
-        this.smartImageElem.dispatchEvent(Events.createCustomEvent("siLoad"));
-      });
+      
+      // Fallback to scroll event detection if browser doesn't support IntersectionObserver
+      if (!window.IntersectionObserver) {
+        PubSub.subscribe(Events.messages.scroll, () => {
+          this.smartImageElem.dispatchEvent(Events.createCustomEvent("siLoad"));
+        }); 
+      }
+      
       PubSub.subscribe(Events.messages.load, () => {
         this.smartImageElem.dispatchEvent(Events.createCustomEvent("siLoad"));
       });
+
       PubSub.subscribe(Events.messages.layoutChange, () => {
         this.smartImageElem.dispatchEvent(Events.createCustomEvent("siLoad"));
       });
@@ -329,6 +351,7 @@ class SmartImage {
     PubSub.subscribe(Events.messages.resize, () => {
       this.smartImageElem.dispatchEvent(Events.createCustomEvent("siReload"));
     });
+
     PubSub.subscribe(Events.messages.breakChange, () => {
       this.smartImageElem.dispatchEvent(Events.createCustomEvent("siReload"));
     });
@@ -344,11 +367,24 @@ function delegateEvents() {
   Events.delegate("click", selClickToLoadSmartImage, "siClickLoad");
 }
 
+
 export function initialiseSmartImages() {
   const smartImages = document.querySelectorAll(selSmartImage);
   Array.prototype.forEach.call(smartImages, element => {
     const newSmartImage = new SmartImage(element);
   });
+}
+
+function handleIntersection (entries, observer) {
+  entries.forEach(function(entry) {
+    if (entry.intersectionRatio > 0) {
+      entry.target.dispatchEvent(Events.createCustomEvent("siLoad"));
+    }
+  });
+}
+
+function initialiseImageObserver() {
+  imageObserver = new IntersectionObserver(handleIntersection, observerOptions);
 }
 
 /**
@@ -360,8 +396,12 @@ export function initModule() {
   // Create delegated event listeners for the components within this module
   delegateEvents();
 
+  // Initialise an observer object to detect when smart image elements are in view
+  initialiseImageObserver();
+
   // Find and initialise Show/Hide components using the ShowHide class
   initialiseSmartImages();
+
 }
 
 export default { initModule: initModule };

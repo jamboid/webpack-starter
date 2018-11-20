@@ -107,8 +107,7 @@
  * @param {Boolean} whether to execute at the beginning (`false`)
  * @api public
  */
-
-module.exports = function debounce(func, wait, immediate){
+function debounce(func, wait, immediate){
   var timeout, args, context, timestamp, result;
   if (null == wait) wait = 100;
 
@@ -159,6 +158,11 @@ module.exports = function debounce(func, wait, immediate){
 
   return debounced;
 };
+
+// Adds compatibility for ES modules
+debounce.debounce = debounce;
+
+module.exports = debounce;
 
 
 /***/ }),
@@ -801,12 +805,13 @@ return ImagesLoaded;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {/*
-Copyright (c) 2010,2011,2012,2013,2014 Morgan Roderick http://roderick.dk
-License: MIT - http://mrgnrdrck.mit-license.org
+/* WEBPACK VAR INJECTION */(function(module) {/**
+ * Copyright (c) 2010,2011,2012,2013,2014 Morgan Roderick http://roderick.dk
+ * License: MIT - http://mrgnrdrck.mit-license.org
+ *
+ * https://github.com/mroderick/PubSubJS
+ */
 
-https://github.com/mroderick/PubSubJS
-*/
 (function (root, factory){
     'use strict';
 
@@ -848,9 +853,11 @@ https://github.com/mroderick/PubSubJS
     }
 
     /**
-	 *	Returns a function that throws the passed exception, for use as argument for setTimeout
-	 *	@param { Object } ex An Error object
-	 */
+     * Returns a function that throws the passed exception, for use as argument for setTimeout
+     * @alias throwException
+     * @function
+     * @param { Object } ex An Error object
+     */
     function throwException( ex ){
         return function reThrowException(){
             throw ex;
@@ -917,6 +924,8 @@ https://github.com/mroderick/PubSubJS
     }
 
     function publish( message, data, sync, immediateExceptions ){
+        message = (typeof message === 'symbol') ? message.toString() : message;
+
         var deliver = createDeliveryFunction( message, data, immediateExceptions ),
             hasSubscribers = messageHasSubscribers( message );
 
@@ -933,36 +942,43 @@ https://github.com/mroderick/PubSubJS
     }
 
     /**
-	 *	PubSub.publish( message[, data] ) -> Boolean
-	 *	- message (String): The message to publish
-	 *	- data: The data to pass to subscribers
-	 *	Publishes the the message, passing the data to it's subscribers
-	**/
+     * Publishes the message, passing the data to it's subscribers
+     * @function
+     * @alias publish
+     * @param { String } message The message to publish
+     * @param {} data The data to pass to subscribers
+     * @return { Boolean }
+     */
     PubSub.publish = function( message, data ){
         return publish( message, data, false, PubSub.immediateExceptions );
     };
 
     /**
-	 *	PubSub.publishSync( message[, data] ) -> Boolean
-	 *	- message (String): The message to publish
-	 *	- data: The data to pass to subscribers
-	 *	Publishes the the message synchronously, passing the data to it's subscribers
-	**/
+     * Publishes the the message synchronously, passing the data to it's subscribers
+     * @function
+     * @alias publishSync
+     * @param { String } message The message to publish
+     * @param {} data The data to pass to subscribers
+     * @return { Boolean }
+     */
     PubSub.publishSync = function( message, data ){
         return publish( message, data, true, PubSub.immediateExceptions );
     };
 
     /**
-	 *	PubSub.subscribe( message, func ) -> String
-	 *	- message (String): The message to subscribe to
-	 *	- func (Function): The function to call when a new message is published
-	 *	Subscribes the passed function to the passed message. Every returned token is unique and should be stored if
-	 *	you need to unsubscribe
-	**/
+     * Subscribes the passed function to the passed message. Every returned token is unique and should be stored if you need to unsubscribe
+     * @function
+     * @alias subscribe
+     * @param { String } message The message to subscribe to
+     * @param { Function } func The function to call when a new message is published
+     * @return { String }
+     */
     PubSub.subscribe = function( message, func ){
         if ( typeof func !== 'function'){
             return false;
         }
+
+        message = (typeof message === 'symbol') ? message.toString() : message;
 
         // message is not registered yet
         if ( !messages.hasOwnProperty( message ) ){
@@ -973,17 +989,19 @@ https://github.com/mroderick/PubSubJS
         // and allow for easy use as key names for the 'messages' object
         var token = 'uid_' + String(++lastUid);
         messages[message][token] = func;
-
+        
         // return token for unsubscribing
         return token;
     };
 
     /**
-	 *	PubSub.subscribeOnce( message, func ) -> PubSub
-	 *	- message (String): The message to subscribe to
-	 *	- func (Function): The function to call when a new message is published
-	 *	Subscribes the passed function to the passed message once
-	**/
+     * Subscribes the passed function to the passed message once
+     * @function
+     * @alias subscribeOnce
+     * @param { String } message The message to subscribe to
+     * @param { Function } func The function to call when a new message is published
+     * @return { PubSub }
+     */
     PubSub.subscribeOnce = function( message, func ){
         var token = PubSub.subscribe( message, function(){
             // before func apply, unsubscribe message
@@ -993,14 +1011,22 @@ https://github.com/mroderick/PubSubJS
         return PubSub;
     };
 
-    /* Public: Clears all subscriptions
-	 */
+    /**
+     * Clears all subscriptions
+     * @function
+     * @public
+     * @alias clearAllSubscriptions
+     */
     PubSub.clearAllSubscriptions = function clearAllSubscriptions(){
         messages = {};
     };
 
-    /*Public: Clear subscriptions by the topic
-	*/
+    /**
+     * Clear subscriptions by the topic
+     * @function
+     * @public
+     * @alias clearAllSubscriptions
+     */
     PubSub.clearSubscriptions = function clearSubscriptions(topic){
         var m;
         for (m in messages){
@@ -1010,25 +1036,26 @@ https://github.com/mroderick/PubSubJS
         }
     };
 
-    /* Public: removes subscriptions.
-	 * When passed a token, removes a specific subscription.
-	 * When passed a function, removes all subscriptions for that function
-	 * When passed a topic, removes all subscriptions for that topic (hierarchy)
-	 *
-	 * value - A token, function or topic to unsubscribe.
-	 *
-	 * Examples
-	 *
-	 *		// Example 1 - unsubscribing with a token
-	 *		var token = PubSub.subscribe('mytopic', myFunc);
-	 *		PubSub.unsubscribe(token);
-	 *
-	 *		// Example 2 - unsubscribing with a function
-	 *		PubSub.unsubscribe(myFunc);
-	 *
-	 *		// Example 3 - unsubscribing a topic
-	 *		PubSub.unsubscribe('mytopic');
-	 */
+    /**
+     * Removes subscriptions
+     *
+     * - When passed a token, removes a specific subscription.
+     *
+	 * - When passed a function, removes all subscriptions for that function
+     *
+	 * - When passed a topic, removes all subscriptions for that topic (hierarchy)
+     * @function
+     * @public
+     * @alias subscribeOnce
+     * @param { String | Function } value A token, function or topic to unsubscribe from
+     * @example // Unsubscribing with a token
+     * var token = PubSub.subscribe('mytopic', myFunc);
+     * PubSub.unsubscribe(token);
+     * @example // Unsubscribing with a function
+     * PubSub.unsubscribe(myFunc);
+     * @example // Unsubscribing from a topic
+     * PubSub.unsubscribe('mytopic');
+     */
     PubSub.unsubscribe = function(value){
         var descendantTopicExists = function(topic) {
                 var m;
@@ -1169,7 +1196,7 @@ function initialiseComponentModules() {
 //////////////////////
 
 /**
- * expandElement - Collapses an element by setting its height to 0.
+ * collapseElement - Collapses an element by setting its height to 0.
  *
  * @param {DOMElement} element - A single DOM element
  */
@@ -1333,7 +1360,6 @@ function bindGlobalMessages() {
  * @param {string} eventToTrigger custom event we want to send back to target element
  */
 function createDelegatedEventListener(eventType, selector, eventToTrigger) {
-  window.console.log(selector);
   (0, _delegate2.default)(document.body, selector, eventType, function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -1418,6 +1444,15 @@ var imageDisplayedClass = "ob_Image--displayed";
 var imageFlexClass = "ob_Image--flex";
 var imageHiddenClass = "ob_Image--isHidden";
 
+// Image Observer
+var observerOptions = {
+  root: null,
+  rootMargin: "0px",
+  threshold: 0
+};
+
+var imageObserver = void 0;
+
 ////////////////////////////////
 // Module Classes & Functions //
 ////////////////////////////////
@@ -1441,6 +1476,11 @@ var SmartImage = function () {
     this.imageLoaded = false;
     this.imageToAdd = document.createElement("img");
     this.srcSet = JSON.parse(this.smartImageElem.dataset.srcSet) || {};
+
+    // Add Image Element to observer
+    if (this.loadingMethod === 'view') {
+      imageObserver.observe(this.smartImageElem);
+    }
 
     // Call initial methods
     this.bindCustomMessageEvents();
@@ -1725,7 +1765,9 @@ var SmartImage = function () {
     key: "bindCustomMessageEvents",
     value: function bindCustomMessageEvents() {
       this.smartImageElem.addEventListener("siLoad", this.loadSmartImage.bind(this));
+
       this.smartImageElem.addEventListener("siReload", this.reloadImage.bind(this));
+
       this.smartImageElem.addEventListener("siClickLoad", this.loadSmartImageOnClick.bind(this));
     }
 
@@ -1740,12 +1782,18 @@ var SmartImage = function () {
       var _this4 = this;
 
       if (this.loadingMethod === "view") {
-        _pubsubJs2.default.subscribe(_Events2.default.messages.scroll, function () {
-          _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent("siLoad"));
-        });
+
+        // Fallback to scroll event detection if browser doesn't support IntersectionObserver
+        if (!window.IntersectionObserver) {
+          _pubsubJs2.default.subscribe(_Events2.default.messages.scroll, function () {
+            _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent("siLoad"));
+          });
+        }
+
         _pubsubJs2.default.subscribe(_Events2.default.messages.load, function () {
           _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent("siLoad"));
         });
+
         _pubsubJs2.default.subscribe(_Events2.default.messages.layoutChange, function () {
           _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent("siLoad"));
         });
@@ -1754,6 +1802,7 @@ var SmartImage = function () {
       _pubsubJs2.default.subscribe(_Events2.default.messages.resize, function () {
         _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent("siReload"));
       });
+
       _pubsubJs2.default.subscribe(_Events2.default.messages.breakChange, function () {
         _this4.smartImageElem.dispatchEvent(_Events2.default.createCustomEvent("siReload"));
       });
@@ -1781,6 +1830,18 @@ function initialiseSmartImages() {
   });
 }
 
+function handleIntersection(entries, observer) {
+  entries.forEach(function (entry) {
+    if (entry.intersectionRatio > 0) {
+      entry.target.dispatchEvent(_Events2.default.createCustomEvent("siLoad"));
+    }
+  });
+}
+
+function initialiseImageObserver() {
+  imageObserver = new IntersectionObserver(handleIntersection, observerOptions);
+}
+
 /**
  * initModule - Initialise this module and the components contained in it
  *
@@ -1789,6 +1850,9 @@ function initialiseSmartImages() {
 function initModule() {
   // Create delegated event listeners for the components within this module
   delegateEvents();
+
+  // Initialise an observer object to detect when smart image elements are in view
+  initialiseImageObserver();
 
   // Find and initialise Show/Hide components using the ShowHide class
   initialiseSmartImages();
@@ -2029,6 +2093,7 @@ function initModule() {
 
   // Find and initialise Show/Hide components using the ShowHide class
   var showHideComponents = document.querySelectorAll(selComponent);
+
   Array.prototype.forEach.call(showHideComponents, function (element) {
     var newShowHide = new ShowHide(element);
   });
