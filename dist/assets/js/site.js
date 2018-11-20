@@ -107,7 +107,8 @@
  * @param {Boolean} whether to execute at the beginning (`false`)
  * @api public
  */
-function debounce(func, wait, immediate){
+
+module.exports = function debounce(func, wait, immediate){
   var timeout, args, context, timestamp, result;
   if (null == wait) wait = 100;
 
@@ -158,11 +159,6 @@ function debounce(func, wait, immediate){
 
   return debounced;
 };
-
-// Adds compatibility for ES modules
-debounce.debounce = debounce;
-
-module.exports = debounce;
 
 
 /***/ }),
@@ -805,13 +801,12 @@ return ImagesLoaded;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {/**
- * Copyright (c) 2010,2011,2012,2013,2014 Morgan Roderick http://roderick.dk
- * License: MIT - http://mrgnrdrck.mit-license.org
- *
- * https://github.com/mroderick/PubSubJS
- */
+/* WEBPACK VAR INJECTION */(function(module) {/*
+Copyright (c) 2010,2011,2012,2013,2014 Morgan Roderick http://roderick.dk
+License: MIT - http://mrgnrdrck.mit-license.org
 
+https://github.com/mroderick/PubSubJS
+*/
 (function (root, factory){
     'use strict';
 
@@ -853,11 +848,9 @@ return ImagesLoaded;
     }
 
     /**
-     * Returns a function that throws the passed exception, for use as argument for setTimeout
-     * @alias throwException
-     * @function
-     * @param { Object } ex An Error object
-     */
+	 *	Returns a function that throws the passed exception, for use as argument for setTimeout
+	 *	@param { Object } ex An Error object
+	 */
     function throwException( ex ){
         return function reThrowException(){
             throw ex;
@@ -924,8 +917,6 @@ return ImagesLoaded;
     }
 
     function publish( message, data, sync, immediateExceptions ){
-        message = (typeof message === 'symbol') ? message.toString() : message;
-
         var deliver = createDeliveryFunction( message, data, immediateExceptions ),
             hasSubscribers = messageHasSubscribers( message );
 
@@ -942,43 +933,36 @@ return ImagesLoaded;
     }
 
     /**
-     * Publishes the message, passing the data to it's subscribers
-     * @function
-     * @alias publish
-     * @param { String } message The message to publish
-     * @param {} data The data to pass to subscribers
-     * @return { Boolean }
-     */
+	 *	PubSub.publish( message[, data] ) -> Boolean
+	 *	- message (String): The message to publish
+	 *	- data: The data to pass to subscribers
+	 *	Publishes the the message, passing the data to it's subscribers
+	**/
     PubSub.publish = function( message, data ){
         return publish( message, data, false, PubSub.immediateExceptions );
     };
 
     /**
-     * Publishes the the message synchronously, passing the data to it's subscribers
-     * @function
-     * @alias publishSync
-     * @param { String } message The message to publish
-     * @param {} data The data to pass to subscribers
-     * @return { Boolean }
-     */
+	 *	PubSub.publishSync( message[, data] ) -> Boolean
+	 *	- message (String): The message to publish
+	 *	- data: The data to pass to subscribers
+	 *	Publishes the the message synchronously, passing the data to it's subscribers
+	**/
     PubSub.publishSync = function( message, data ){
         return publish( message, data, true, PubSub.immediateExceptions );
     };
 
     /**
-     * Subscribes the passed function to the passed message. Every returned token is unique and should be stored if you need to unsubscribe
-     * @function
-     * @alias subscribe
-     * @param { String } message The message to subscribe to
-     * @param { Function } func The function to call when a new message is published
-     * @return { String }
-     */
+	 *	PubSub.subscribe( message, func ) -> String
+	 *	- message (String): The message to subscribe to
+	 *	- func (Function): The function to call when a new message is published
+	 *	Subscribes the passed function to the passed message. Every returned token is unique and should be stored if
+	 *	you need to unsubscribe
+	**/
     PubSub.subscribe = function( message, func ){
         if ( typeof func !== 'function'){
             return false;
         }
-
-        message = (typeof message === 'symbol') ? message.toString() : message;
 
         // message is not registered yet
         if ( !messages.hasOwnProperty( message ) ){
@@ -989,19 +973,17 @@ return ImagesLoaded;
         // and allow for easy use as key names for the 'messages' object
         var token = 'uid_' + String(++lastUid);
         messages[message][token] = func;
-        
+
         // return token for unsubscribing
         return token;
     };
 
     /**
-     * Subscribes the passed function to the passed message once
-     * @function
-     * @alias subscribeOnce
-     * @param { String } message The message to subscribe to
-     * @param { Function } func The function to call when a new message is published
-     * @return { PubSub }
-     */
+	 *	PubSub.subscribeOnce( message, func ) -> PubSub
+	 *	- message (String): The message to subscribe to
+	 *	- func (Function): The function to call when a new message is published
+	 *	Subscribes the passed function to the passed message once
+	**/
     PubSub.subscribeOnce = function( message, func ){
         var token = PubSub.subscribe( message, function(){
             // before func apply, unsubscribe message
@@ -1011,22 +993,14 @@ return ImagesLoaded;
         return PubSub;
     };
 
-    /**
-     * Clears all subscriptions
-     * @function
-     * @public
-     * @alias clearAllSubscriptions
-     */
+    /* Public: Clears all subscriptions
+	 */
     PubSub.clearAllSubscriptions = function clearAllSubscriptions(){
         messages = {};
     };
 
-    /**
-     * Clear subscriptions by the topic
-     * @function
-     * @public
-     * @alias clearAllSubscriptions
-     */
+    /*Public: Clear subscriptions by the topic
+	*/
     PubSub.clearSubscriptions = function clearSubscriptions(topic){
         var m;
         for (m in messages){
@@ -1036,26 +1010,25 @@ return ImagesLoaded;
         }
     };
 
-    /**
-     * Removes subscriptions
-     *
-     * - When passed a token, removes a specific subscription.
-     *
-	 * - When passed a function, removes all subscriptions for that function
-     *
-	 * - When passed a topic, removes all subscriptions for that topic (hierarchy)
-     * @function
-     * @public
-     * @alias subscribeOnce
-     * @param { String | Function } value A token, function or topic to unsubscribe from
-     * @example // Unsubscribing with a token
-     * var token = PubSub.subscribe('mytopic', myFunc);
-     * PubSub.unsubscribe(token);
-     * @example // Unsubscribing with a function
-     * PubSub.unsubscribe(myFunc);
-     * @example // Unsubscribing from a topic
-     * PubSub.unsubscribe('mytopic');
-     */
+    /* Public: removes subscriptions.
+	 * When passed a token, removes a specific subscription.
+	 * When passed a function, removes all subscriptions for that function
+	 * When passed a topic, removes all subscriptions for that topic (hierarchy)
+	 *
+	 * value - A token, function or topic to unsubscribe.
+	 *
+	 * Examples
+	 *
+	 *		// Example 1 - unsubscribing with a token
+	 *		var token = PubSub.subscribe('mytopic', myFunc);
+	 *		PubSub.unsubscribe(token);
+	 *
+	 *		// Example 2 - unsubscribing with a function
+	 *		PubSub.unsubscribe(myFunc);
+	 *
+	 *		// Example 3 - unsubscribing a topic
+	 *		PubSub.unsubscribe('mytopic');
+	 */
     PubSub.unsubscribe = function(value){
         var descendantTopicExists = function(topic) {
                 var m;
@@ -1598,6 +1571,7 @@ var SmartImage = function () {
       }, 50);
 
       this.imageLoaded = true;
+      imageObserver.unobserve(this.smartImageElem);
     }
 
     /**
@@ -1627,6 +1601,7 @@ var SmartImage = function () {
       }, 50);
 
       this.imageLoaded = true;
+      imageObserver.unobserve(this.smartImageElem);
     }
 
     /**

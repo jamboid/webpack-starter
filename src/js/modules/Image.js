@@ -168,6 +168,7 @@ class SmartImage {
     }, 50);
 
     this.imageLoaded = true;
+    imageObserver.unobserve(this.smartImageElem);
   }
 
   /**
@@ -192,6 +193,7 @@ class SmartImage {
     }, 50);
 
     this.imageLoaded = true;
+    imageObserver.unobserve(this.smartImageElem);
   }
 
   /**
