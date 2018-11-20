@@ -6,7 +6,7 @@
 //////////////////////
 
 /**
- * expandElement - Collapses an element by setting its height to 0.
+ * collapseElement - Collapses an element by setting its height to 0.
  *
  * @param {DOMElement} element - A single DOM element
  */
