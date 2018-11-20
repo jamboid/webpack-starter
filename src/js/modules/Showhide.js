@@ -55,7 +55,6 @@ class ShowHide {
    */
   toggleControl(event) {
     event.preventDefault();
-    //this.element.classList.toggle(displayClass);
 
     if (this.element.classList.contains(displayClass)) {
       Animation.collapseElement(this.content);
@@ -118,4 +117,6 @@ export function initModule() {
   });
 }
 
-export default { initModule: initModule };
+export default {
+  initModule: initModule
+};

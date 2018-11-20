@@ -5,28 +5,26 @@
 
   &__toggle {
     display: inline-block;
-    padding:10px;
+    padding: 10px;
     text-decoration: none;
-    border:2px solid #ddd;
-    margin:0 0 1em;
+    border: 2px solid #ddd;
+    margin: 0 0 1em;
   }
 
   &__content {
     display: block;
     height: 0;
     overflow: hidden;
-    transition:height 0.25s ease-in-out;
+    transition: height 0.25s ease-in-out;
   }
 
   &__contentInner {
-    background:#ddd;
-    padding:20px;
+    background: #ddd;
+    padding: 20px;
   }
 
   &.is_Open {
-    #{ $self }__toggle {
-
-    }
+    #{ $self }__toggle {}
 
     #{ $self }__content {
       height: auto;

@@ -1963,7 +1963,6 @@ var ShowHide = function () {
     key: "toggleControl",
     value: function toggleControl(event) {
       event.preventDefault();
-      //this.element.classList.toggle(displayClass);
 
       if (this.element.classList.contains(displayClass)) {
         _Animation2.default.collapseElement(this.content);
@@ -2034,7 +2033,9 @@ function initModule() {
   });
 }
 
-exports.default = { initModule: initModule };
+exports.default = {
+  initModule: initModule
+};
 
 /***/ }),
 
