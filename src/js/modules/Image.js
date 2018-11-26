@@ -335,7 +335,7 @@ class SmartImage {
     if (this.loadingMethod === "view") {
       
       // Fallback to scroll event detection if browser doesn't support IntersectionObserver
-      if (!window.IntersectionObserver) {
+      if (typeof(window.IntersectionObserver) === 'undefined') {
         PubSub.subscribe(Events.messages.scroll, () => {
           this.smartImageElem.dispatchEvent(Events.createCustomEvent("siLoad"));
         }); 
@@ -402,7 +402,7 @@ export function initModule() {
   initialiseImageObserver();
 
   // Find and initialise Show/Hide components using the ShowHide class
-  initialiseSmartImages();
+  initialiseSmartImages(); 
 
 }
 
