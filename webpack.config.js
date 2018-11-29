@@ -1,28 +1,8 @@
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpackDashboard = require('webpack-dashboard/plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const fs = require('fs');
-
-// Our function that generates our html plugins
-function generateHtmlPlugins (templateDir) {
-  // Read files in template directory
-  const templateFiles = fs.readdirSync(path.resolve(__dirname, templateDir))
-  return templateFiles.map(item => {
-    // Split names and extension
-    const parts = item.split('.')
-    const name = parts[0]
-    const extension = parts[1]
-    // Create new HTMLWebpackPlugin with options
-    return new HtmlWebpackPlugin({
-      filename: `${name}.html`,
-      template: path.resolve(__dirname, `${templateDir}/${name}.${extension}`)
-    })
-  })
-}
-
-const htmlPlugins = generateHtmlPlugins('./src/html/pages')
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const fs = require('fs');
 
 const config = {
   entry: { main: './src/js'},
@@ -48,16 +28,6 @@ const config = {
           'sass-loader'
         ]
       }
-      // ,
-      // {
-      //   test: /\.(html)$/,
-      //   use: {
-      //     loader: 'html-loader',
-      //     options: {
-      //       interpolate: true
-      //     }
-      //   }
-      // }
     ]
   },
   resolve: {
@@ -70,11 +40,8 @@ const config = {
     new webpackDashboard(),
     new MiniCssExtractPlugin({
       filename: "/assets/css/screen.css",
-    }),
-    new CopyWebpackPlugin([
-      {from:'src/img',to: 'assets/img'}
-    ])
-  ].concat(htmlPlugins)
+    })
+  ]
 };
 
 module.exports = config;
