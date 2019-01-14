@@ -10,7 +10,7 @@ import { initModule as initNav } from "Modules/Navigation";
 import { initModule as initTabs } from "Modules/Tabs";
 import Prism from 'prismjs';
 
-/**
+/** 
  * initialiseComponentModules - call module init functions
  *
  * @returns {type} Description
