@@ -47,7 +47,8 @@ body {
     width: 100%; }
   .cp_SmartImage--background {
     padding-top: 60%;
-    background-size: cover; }
+    background-size: cover;
+    margin-bottom: 20px; }
 
 
 /*# sourceMappingURL=screen.css.map*/

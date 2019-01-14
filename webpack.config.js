@@ -1,17 +1,18 @@
 const path = require('path');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+//const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpackDashboard = require('webpack-dashboard/plugin');
-// const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WebpackNotifierPlugin = require("webpack-notifier");
 // const fs = require('fs');
 
 const config = {
-  entry: { main: './src/js'},
+  entry: ["./src/js", "./src/scss/screen.scss"],
   output: {
-    filename: 'assets/js/site.js',
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '.',
+    filename: "js/site.js",
+    path: path.resolve(__dirname, "dist"),
+    publicPath: "."
   },
-  devtool: 'source-map',
+  devtool: "source-map",
   module: {
     rules: [
       {
@@ -22,26 +23,52 @@ const config = {
       {
         test: /\.scss$/,
         use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader',
-          'sass-loader'
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].css',
+              context: './src/scss/',
+              outputPath: '/css',
+              publicPath: '/dist/css'
+            }
+          },
+          {
+            loader: 'extract-loader'
+          },
+          {
+            loader: "css-loader",
+            options: {
+              url: false,
+              importLoaders: 2,
+              sourceMap: true
+            }
+          },
+          {
+            loader: "postcss-loader",
+            options: { sourceMap: true }
+          },
+          {
+            loader: "sass-loader",
+            options: { sourceMap: true }
+          }
         ]
       }
     ]
   },
   resolve: {
     alias: {
-      Modules: path.resolve(__dirname, 'src/js/modules/'),
-      Sass: path.resolve(__dirname, 'src/scss/')
+      Modules: path.resolve(__dirname, "src/js/modules/"),
+      Sass: path.resolve(__dirname, "src/scss/")
     }
   },
   plugins: [
     new webpackDashboard(),
-    new MiniCssExtractPlugin({
-      filename: "/assets/css/screen.css",
-    })
+    // new MiniCssExtractPlugin({
+    //   filename: "/css/screen.css"
+    // }),
+    new CopyWebpackPlugin([{ from: "src/img", to: "img" }]),
+    new WebpackNotifierPlugin({ alwaysNotify: true })
   ]
 };
 
-module.exports = config;
+module.exports = config; 

@@ -3,11 +3,9 @@
 ////////////////////
 "use strict";
 
-
 import debounce from "debounce";
 import delegate from "delegate";
 import PubSub from "pubsub-js";
-
 
 //////////////////////
 // Module Constants //
@@ -22,8 +20,10 @@ export const messages = {
   "scroll": "page/scroll",
   "load": "page/load",
   "contentChange": "page-content/change",
+  "contentDisplayed": "page-content/displayed",
   "layoutChange": "layout/change",
-  "breakChange" : "breakpoint/change"
+  "breakChange" : "breakpoint/change",
+  "imageLoaded" : "image/loaded"
 }
 
 /////////////////////////
@@ -70,6 +70,27 @@ function bindGlobalMessages() {
   }, 200);
 }
 
+
+/**
+ * createGlobalMessenger
+ *
+ * @export
+ * @param {string} eventType
+ * @param {string} selector
+ * @param {string} message
+ * @param {boolean} preventBubble
+ */
+export function createGlobalMessenger(eventType, selector, message, preventBubble) {
+  delegate(document.body, selector, eventType, (e) => {
+    if(preventBubble) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    PubSub.publish(message, e);
+  }, false);
+}
+
 /**
  * createDelegatedEventListener - Simple factory function to bind a common delegated event listener to the <body> element
  *
@@ -99,5 +120,6 @@ export default {
   initModule: initModule,
   messages:messages,
   delegate:createDelegatedEventListener,
+  global: createGlobalMessenger,
   createCustomEvent:createCustomEvent,
 }

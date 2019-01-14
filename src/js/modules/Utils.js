@@ -25,9 +25,37 @@ export function closestParent(el, selector, includeSelf) {
       return null;
     }
   }
+
   return null;
 }
 
+export function indexOfNode(node) {
+  const child = node;
+  const parent = child.parentNode;
+  // The equivalent of parent.children.indexOf(child)
+  const index = Array.prototype.indexOf.call(parent.children, child);  
+
+  return index;
+}
+
+/**
+ *
+ *
+ * @export
+ * @param {*} htmlString
+ * @returns
+ */
+export function createNodeFromHTML(htmlString) {
+  const div = document.createElement('div');
+  div.innerHTML = htmlString.trim();
+  // Change this to div.childNodes to support multiple top-level nodes
+  return div.firstChild;
+}
+
+export function wrapElement(el, wrapper) {
+  el.parentNode.insertBefore(wrapper, el);
+  wrapper.appendChild(el);
+}
 
 /**
  * isElementInView - Description
@@ -149,13 +177,16 @@ export function ready(fn) {
 }
 
 export default {
-  closestParent:closestParent,
-  isElementInView:isElementInView,
-  outerWidth:outerWidth,
-  outerHeight:outerHeight,
-  getURLQueryString:getURLQueryString,
-  decodeCharacters:decodeCharacters,
-  resetStyles:resetStyles,
-  getOffset:getOffset,
-  ready:ready
-}
+  closestParent: closestParent,
+  isElementInView: isElementInView,
+  outerWidth: outerWidth,
+  outerHeight: outerHeight,
+  getURLQueryString: getURLQueryString,
+  decodeCharacters: decodeCharacters,
+  resetStyles: resetStyles,
+  getOffset: getOffset,
+  createNodeFromHTML: createNodeFromHTML,
+  indexOfNode: indexOfNode,
+  wrapElement: wrapElement,
+  ready: ready
+};

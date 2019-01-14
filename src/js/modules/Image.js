@@ -21,11 +21,11 @@ const selClickToLoadSmartImage = "[data-image-load=click] img.placeholder";
 const selPlaceholderImage = "img";
 
 // Classes
-const imageLoadingClass = "ob_Image--loading";
-const imageLoadedClass = "ob_Image--loaded";
-const imageDisplayedClass = "ob_Image--displayed";
-const imageFlexClass = "ob_Image--flex";
-const imageHiddenClass = "ob_Image--isHidden";
+const imageLoadingClass = "ob_Media--loading";
+const imageLoadedClass = "ob_Media--loaded";
+const imageDisplayedClass = "ob_Media--displayed";
+const imageFlexClass = "ob_Media--flex";
+const imageHiddenClass = "ob_Media--isHidden";
 
 // Image Observer
 const observerOptions  = {
@@ -47,9 +47,7 @@ class SmartImage {
   constructor(element) {
     // Set properties
     this.smartImageElem = element;
-    this.placeholderImage = this.smartImageElem.querySelector(
-      selPlaceholderImage
-    );
+    this.placeholderImage = this.smartImageElem.querySelector(selPlaceholderImage);
     this.loadingMethod = this.smartImageElem.dataset.imageLoad;
     this.config = JSON.parse(this.smartImageElem.dataset.imageConfig);
     this.imageType = this.config.type || false;
@@ -61,7 +59,9 @@ class SmartImage {
 
     // Add Image Element to observer
     if(this.loadingMethod === 'view') {
-      imageObserver.observe(this.smartImageElem);
+      if (typeof (window.IntersectionObserver) !== 'undefined') {
+        imageObserver.observe(this.smartImageElem);
+      }
     }
 
     // Call initial methods
@@ -259,10 +259,7 @@ class SmartImage {
       component = component.parentNode;
     }
 
-    if (
-      inView(component) &&
-      (this.imageLoaded === false || this.imageReloader === true)
-    ) {
+    if ( inView(component) && (this.imageLoaded === false || this.imageReloader === true)) {
       this.getImageFile(this.smartImageElem);
     }
   }
@@ -298,7 +295,7 @@ class SmartImage {
    *
    * @param {event} e Description
    */
-  loadSmartImageOnClick(e) {
+  loadSmartImageOnClick(e) { 
     e.preventDefault();
 
     if (this.imageLoaded === false) {
@@ -313,6 +310,11 @@ class SmartImage {
   bindCustomMessageEvents() {
     this.smartImageElem.addEventListener(
       "siLoad",
+      this.loadSmartImage.bind(this)
+    );
+
+    this.smartImageElem.addEventListener(
+      "imageInView",
       this.loadSmartImage.bind(this)
     );
     
@@ -332,13 +334,12 @@ class SmartImage {
    *
    */
   subscribeToEvents() {
-    if (this.loadingMethod === "view") {
-      
+    if (this.loadingMethod === "view") {     
       // Fallback to scroll event detection if browser doesn't support IntersectionObserver
       if (typeof(window.IntersectionObserver) === 'undefined') {
-        PubSub.subscribe(Events.messages.scroll, () => {
-          this.smartImageElem.dispatchEvent(Events.createCustomEvent("siLoad"));
-        }); 
+        // PubSub.subscribe(Events.messages.scroll, () => {
+        //   this.smartImageElem.dispatchEvent(Events.createCustomEvent("siLoad"));
+        // }); 
       }
       
       PubSub.subscribe(Events.messages.load, () => {
@@ -360,6 +361,36 @@ class SmartImage {
   }
 }
 
+
+class SmartImageFactory {
+  constructor () {
+    this.subscribeToEvents();
+  }
+
+  createNewSmartImageObjects (data) {
+    const smartImages = data.querySelectorAll(selSmartImage);
+    Array.prototype.forEach.call(smartImages, element => {
+      const newSmartImage = new SmartImage(element);
+    });
+  }
+
+  displaySmartImages () {
+    
+  }
+
+  subscribeToEvents () {
+    // On a content change, the newly-added elements are passed as parameters to a function
+    // that finds any smartImages and initialises controlling objects for each
+    PubSub.subscribe(Events.messages.contentChange, (topic, data) => {
+      this.createNewSmartImageObjects(data);
+    });
+
+    PubSub.subscribe(Events.messages.contentDisplayed, (topic, data) => {
+      this.displaySmartImages(data);
+    });
+  } 
+}
+
 /**
  * delegateEvents - Create delegated event listeners for the components managed within this module
  *
@@ -370,23 +401,28 @@ function delegateEvents() {
 }
 
 
-export function initialiseSmartImages() {
+function initialiseSmartImages() {
   const smartImages = document.querySelectorAll(selSmartImage);
-  Array.prototype.forEach.call(smartImages, element => {
+
+  smartImages.forEach(element => {
     const newSmartImage = new SmartImage(element);
   });
+
+  const newSmartImageFactory = new SmartImageFactory();
 }
 
 function handleIntersection (entries, observer) {
   entries.forEach(function(entry) {
     if (entry.intersectionRatio > 0) {
-      entry.target.dispatchEvent(Events.createCustomEvent("siLoad"));
+      entry.target.dispatchEvent(Events.createCustomEvent("imageInView"));
     }
   });
 }
 
-function initialiseImageObserver() {
-  imageObserver = new IntersectionObserver(handleIntersection, observerOptions);
+function initialiseImageObserver() { 
+  if (typeof (window.IntersectionObserver) !== 'undefined') {
+    imageObserver = new IntersectionObserver(handleIntersection, observerOptions);
+  }  
 }
 
 /**

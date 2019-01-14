@@ -1784,7 +1784,6 @@ var SmartImage = function () {
       var _this4 = this;
 
       if (this.loadingMethod === "view") {
-
         // Fallback to scroll event detection if browser doesn't support IntersectionObserver
         if (typeof window.IntersectionObserver === 'undefined') {
           _pubsubJs2.default.subscribe(_Events2.default.messages.scroll, function () {
