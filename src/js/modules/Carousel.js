@@ -5,7 +5,8 @@
 import PubSub from "pubsub-js";
 import Events from "Modules/Events";
 
-const selComponent = "[data-carousel=component]";
+const selSlider = "[data-carousel-type=slider]";
+const selFader = "[data-carousel-type=fader]";
 
 
 /**
@@ -21,12 +22,11 @@ class Carousel {
   }
 }
 
-
 /**
  * Fader - Description
  * @extends Carousel
  */
-export class Fader extends Carousel {
+class Fader extends Carousel {
   constructor(element) {
     super(element);
   }
@@ -36,8 +36,45 @@ export class Fader extends Carousel {
  * Scroller - Description
  * @extends Carousel
  */
-export class Scroller extends Carousel {
+class Slider extends Carousel {
   constructor(element) {
     super(element);
   }
 }
+
+/**
+ * delegateEvents - Create delegated event listeners for the components within this module
+ *
+ * @returns {type} Description
+ */
+function delegateEvents() {
+  //Events.delegate("event", selector, "selectTab");
+}
+
+/**
+ * initModule - Initialise this module and the components contained in it
+ *
+ * @returns {type} Description
+ */
+export function initModule() {
+  // Create delegated event listeners for the components within this module
+  delegateEvents();
+
+  // Find and initialise Slider carousel components
+  const sliders = document.querySelectorAll(selSlider);
+
+  sliders.forEach(element => {
+    const newSlider = new Slider(element);
+  });
+
+  // Find and initialise Fader carousel components
+  const faders = document.querySelectorAll(selFader);
+
+  faders.forEach(element => {
+    const newFader = new Fader(element);
+  });
+}
+
+export default {
+  initModule: initModule
+};

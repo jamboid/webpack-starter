@@ -2090,6 +2090,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 /** 
  * initialiseComponentModules - call module init functions
  *
@@ -2102,6 +2103,7 @@ function initialiseComponentModules() {
   Object(Modules_Image__WEBPACK_IMPORTED_MODULE_4__["initModule"])();
   Object(Modules_Modal__WEBPACK_IMPORTED_MODULE_3__["initModule"])();
   Object(Modules_Video__WEBPACK_IMPORTED_MODULE_5__["initModule"])();
+  Object(Modules_Tabs__WEBPACK_IMPORTED_MODULE_7__["initModule"])();
   Object(Modules_Tabs__WEBPACK_IMPORTED_MODULE_7__["initModule"])();
 
   setTimeout(function () {
@@ -3325,9 +3327,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 
-//////////////////////
+////////////////////// 
 // Module Constants //
-//////////////////////
+////////////////////// 
 
 var selComponent = "[data-showhide=component]";
 var selAction = "[data-showhide=component] [data-showhide=toggle]";
@@ -3673,7 +3675,7 @@ function wrapElement(el, wrapper) {
 /**
  * isElementInView - Description
  *
- * @param {object} element Description
+ * @param {Element} element Description
  *
  * @returns {boolean} Description
  */
@@ -3696,7 +3698,7 @@ function isElementInView(element) {
 /**
  * outerWidth - function that returns the width of an element including horizontal margins
  *
- * @param {object} el - Single DOM element
+ * @param {Element} el - Single DOM element
  *
  * @returns {int} calculated outer width of el
  */
@@ -3710,9 +3712,11 @@ function outerWidth(el) {
 
 /**
  * outerWidth function that returns the height of an element including vertical margins
+ *
+ * @export
  * @param {Element} el
+ * @returns
  */
-
 function outerHeight(el) {
   var height = parseInt(el.offsetHeight);
   var style = getComputedStyle(el);
@@ -3726,15 +3730,15 @@ function outerHeight(el) {
  * @return  {Array}
  */
 function getURLQueryString() {
-  var vars = [],
-      hash;
+  var queryStringValues = [];
+  var hash = void 0;
   var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
   for (var i = 0; i < hashes.length; i++) {
     hash = hashes[i].split('=');
-    vars.push(hash[0]);
-    vars[hash[0]] = hash[1];
+    queryStringValues.push(hash[0]);
+    queryStringValues[hash[0]] = hash[1];
   }
-  return vars;
+  return queryStringValues;
 }
 
 /**
@@ -3769,10 +3773,10 @@ function resetStyles(element) {
  * @returns {object} Simple object with left and top properties
  */
 function getOffset(el) {
-  el = el.getBoundingClientRect();
+  var elementBoundary = el.getBoundingClientRect();
   return {
-    left: el.left + window.scrollX,
-    top: el.top + window.scrollY
+    left: elementBoundary.left + window.scrollX,
+    top: elementBoundary.top + window.scrollY
   };
 }
 

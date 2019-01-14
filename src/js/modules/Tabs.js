@@ -92,7 +92,7 @@ export function initModule() {
 
   // Find and initialise Show/Hide components using the ShowHide class
   const tabComponents = document.querySelectorAll(selTabComponent);
-
+  
   tabComponents.forEach((element) => {
     const newTabbedContent = new TabbedContent(element);
   });

@@ -60,7 +60,7 @@ export function wrapElement(el, wrapper) {
 /**
  * isElementInView - Description
  *
- * @param {object} element Description
+ * @param {Element} element Description
  *
  * @returns {boolean} Description
  */
@@ -83,7 +83,7 @@ export function isElementInView(element) {
 /**
  * outerWidth - function that returns the width of an element including horizontal margins
  *
- * @param {object} el - Single DOM element
+ * @param {Element} el - Single DOM element
  *
  * @returns {int} calculated outer width of el
  */
@@ -97,9 +97,11 @@ export function outerWidth(el) {
 
 /**
  * outerWidth function that returns the height of an element including vertical margins
+ *
+ * @export
  * @param {Element} el
+ * @returns
  */
-
 export function outerHeight(el) {
   let height = parseInt(el.offsetHeight);
   const style = getComputedStyle(el);
@@ -113,15 +115,15 @@ export function outerHeight(el) {
  * @return  {Array}
  */
 export function getURLQueryString() {
-  var vars = [],
-    hash;
-  var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-  for (var i = 0; i < hashes.length; i++) {
+  const queryStringValues = [];
+  let hash;
+  const hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+  for (let i = 0; i < hashes.length; i++) {
     hash = hashes[i].split('=');
-    vars.push(hash[0]);
-    vars[hash[0]] = hash[1];
+    queryStringValues.push(hash[0]);
+    queryStringValues[hash[0]] = hash[1];
   }
-  return vars;
+  return queryStringValues;
 }
 
 /**
@@ -132,7 +134,7 @@ export function getURLQueryString() {
  * @returns {string}
  */
 export function decodeCharacters(text) {
-  var elem = document.createElement('textarea');
+  const elem = document.createElement('textarea');
   elem.innerHTML = text;
   return elem.value;
 }
@@ -156,10 +158,10 @@ export function resetStyles(element) {
  * @returns {object} Simple object with left and top properties
  */
 export function getOffset(el) {
-  el = el.getBoundingClientRect();
+  const elementBoundary = el.getBoundingClientRect();
   return {
-    left: el.left + window.scrollX,
-    top: el.top + window.scrollY
+    left: elementBoundary.left + window.scrollX,
+    top: elementBoundary.top + window.scrollY
   }
 }
 

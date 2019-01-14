@@ -8,6 +8,7 @@ import { initModule as initImage } from "Modules/Image";
 import { initModule as initVideo } from "Modules/Video";
 import { initModule as initNav } from "Modules/Navigation";
 import { initModule as initTabs } from "Modules/Tabs";
+import { initModule as initCarousel } from "Modules/Tabs";
 import Prism from 'prismjs';
 
 /** 
@@ -17,12 +18,13 @@ import Prism from 'prismjs';
  */ 
 function initialiseComponentModules() {
   initEvents();
-  initNav(); 
+  initNav();
   initShowhide(); 
   initImage();
   initModal();
   initVideo();
   initTabs();
+  initCarousel();
 
   setTimeout(() => {
     Prism.highlightAll();

@@ -7,11 +7,11 @@
 
 import PubSub from "pubsub-js";
 import Events from "Modules/Events";
-import Animation from "Modules/Animation";
-
-//////////////////////
+import Animation from "Modules/Animation"; 
+ 
+////////////////////// 
 // Module Constants //
-//////////////////////
+////////////////////// 
 
 const selComponent = "[data-showhide=component]";
 const selAction = "[data-showhide=component] [data-showhide=toggle]";
