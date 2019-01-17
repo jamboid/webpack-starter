@@ -142,6 +142,8 @@ class SmartImage {
     // Add 'loading' class to SmartImage container
     this.smartImageElem.classList.add(imageLoadingClass);
 
+    // If there is a placeholder image, update the attributes of this instead
+    // of using the new img element we've created with this class object...
     if (this.placeholderImage) {
       this.placeholderImage.src = this.imageToAdd.src;
       this.placeholderImage.classList.remove("placeholder");
@@ -149,7 +151,10 @@ class SmartImage {
       this.placeholderImage.removeAttribute("height");
 
       this.updateImageAttributes(this.placeholderImage);
-    } else {
+    } 
+    // ...otherwise use the newly-created img element
+    else {
+      //
       this.updateImageAttributes(this.imageToAdd);
 
       if (this.imageTargetSel !== null) {

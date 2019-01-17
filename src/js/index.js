@@ -9,7 +9,6 @@ import { initModule as initVideo } from "Modules/Video";
 import { initModule as initNav } from "Modules/Navigation";
 import { initModule as initTabs } from "Modules/Tabs";
 import { initModule as initCarousel } from "Modules/Tabs";
-import Prism from 'prismjs';
 
 /** 
  * initialiseComponentModules - call module init functions
@@ -25,10 +24,6 @@ function initialiseComponentModules() {
   initVideo();
   initTabs();
   initCarousel();
-
-  setTimeout(() => {
-    Prism.highlightAll();
-  }, 0);
 
   // Wrap tables in container to allow overflow scroll
   // This is a small enough bit of functionality to put on it's own here.

@@ -8,7 +8,6 @@
     "delegate": "^3.2.0",
     "imagesloaded": "^4.1.4",
     "npm": "^6.4.1",
-    "prismjs": "^1.15.0",
     "pubsub-js": "^1.7.0"
   },
   "devDependencies": {
@@ -17,7 +16,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
     "copy-webpack-plugin": "^4.6.0",
-    "css-loader": "^0.28.11", 
+    "css-loader": "^0.28.11",
     "cssnano": "^4.1.7",
     "eslint": "^5.9.0",
     "eslint-loader": "^2.1.1",

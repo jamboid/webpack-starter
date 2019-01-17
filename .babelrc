@@ -12,23 +12,5 @@
         } 
       }
     ]
-  ],  
-  "plugins": [
-    [
-      "prismjs",
-      {
-        "languages": [
-          "javascript",
-          "css",
-          "scss",
-          "markup"
-        ],
-        "plugins": [
-          "line-numbers"
-        ],
-        "theme": "default",
-        "css": true
-      }
-    ]
   ]
 }
